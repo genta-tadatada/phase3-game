@@ -1,0 +1,20 @@
+{
+  // tadatada.net/games/football/* を配信する専用Worker（高校サッカー部）。
+  // 設計正本: .secretary/planning/auth-architecture.md §1 ／ 関連 ADR-023 ADR-025
+  "name": "tadatada-games-football",
+  "main": "worker.js",
+  "compatibility_date": "2026-06-01",
+
+  // dist/ の静的アセットを ASSETS binding として同梱（vite build の出力）。
+  // worker.js が /games/football プレフィックスを剥がしてここから配信する。
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS"
+  },
+
+  // 末尾スラッシュあり/なし両方を横取りする（なしは worker.js が301で寄せる）。
+  "routes": [
+    { "pattern": "tadatada.net/games/football", "zone_name": "tadatada.net" },
+    { "pattern": "tadatada.net/games/football/*", "zone_name": "tadatada.net" }
+  ]
+}

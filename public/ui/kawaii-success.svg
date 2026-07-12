@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <!-- 本体：ミントの立体グラデ（3ストップ） -->
+    <radialGradient id="succBody" cx="38%" cy="30%" r="78%">
+      <stop offset="0%" stop-color="#d1fae5"/>
+      <stop offset="55%" stop-color="#6ee7b7"/>
+      <stop offset="100%" stop-color="#34cfa0"/>
+    </radialGradient>
+    <!-- 斜めのつや（白の帯） -->
+    <linearGradient id="succSheen" x1="20%" y1="10%" x2="70%" y2="80%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="45%" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <!-- チェックマークの淡いグラデ -->
+    <linearGradient id="succCheck" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#eafff6"/>
+    </linearGradient>
+    <!-- やわらかい影 -->
+    <radialGradient id="succShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#34cfa0" stop-opacity="0.32"/>
+      <stop offset="100%" stop-color="#34cfa0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 接地のソフトシャドウ -->
+  <ellipse cx="100" cy="160" rx="58" ry="14" fill="url(#succShadow)"/>
+
+  <!-- 紙吹雪（奥行きを出す散らし） -->
+  <g opacity="0.95">
+    <path d="M38 48 C40 53 43 56 48 58 C43 60 40 63 38 68 C36 63 33 60 28 58 C33 56 36 53 38 48 Z" fill="#f9a8d4"/>
+    <path d="M163 58 C164.6 61.5 167 63.8 170.5 65.4 C167 67 164.6 69.3 163 72.8 C161.4 69.3 159 67 155.5 65.4 C159 63.8 161.4 61.5 163 58 Z" fill="#c4b5fd"/>
+    <circle cx="33" cy="128" r="5.5" fill="#fde68a"/>
+    <circle cx="170" cy="134" r="4" fill="#f9a8d4"/>
+    <circle cx="152" cy="28" r="4" fill="#8b5cf6" opacity="0.8"/>
+    <rect x="46" y="150" width="7" height="7" rx="2" fill="#6ee7b7" transform="rotate(24 49 153)"/>
+    <rect x="146" y="156" width="6" height="6" rx="2" fill="#fde68a" transform="rotate(-18 149 159)"/>
+  </g>
+
+  <!-- バッジ本体 -->
+  <circle cx="100" cy="100" r="58" fill="url(#succBody)"/>
+  <!-- 内側の白フチ -->
+  <circle cx="100" cy="100" r="58" fill="none" stroke="#ffffff" stroke-width="5" opacity="0.55"/>
+  <!-- 下側の陰（厚み表現） -->
+  <path d="M58 118 A58 58 0 0 0 142 118" fill="none" stroke="#2bb78d" stroke-width="6" stroke-linecap="round" opacity="0.18"/>
+  <!-- 斜めのつや帯 -->
+  <ellipse cx="100" cy="100" rx="58" ry="58" fill="url(#succSheen)"/>
+  <!-- メインハイライト（つや玉） -->
+  <ellipse cx="78" cy="74" rx="20" ry="12" fill="#ffffff" opacity="0.55" transform="rotate(-28 78 74)"/>
+  <circle cx="118" cy="70" r="5" fill="#ffffff" opacity="0.7"/>
+
+  <!-- チェックマーク（裏に薄い影 → 本体） -->
+  <path d="M75 103 L93 121 L127 83" fill="none" stroke="#2bb78d" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity="0.25" transform="translate(0 2)"/>
+  <path d="M75 103 L93 121 L127 83" fill="none" stroke="url(#succCheck)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- かわいいほっぺ -->
+  <circle cx="76" cy="126" r="6.5" fill="#fbcfe8" opacity="0.85"/>
+  <circle cx="124" cy="126" r="6.5" fill="#fbcfe8" opacity="0.85"/>
+</svg>

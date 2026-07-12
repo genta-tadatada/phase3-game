@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="petalGrad" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#ffc6d8"/>
+      <stop offset="100%" stop-color="#ee7a9e"/>
+    </radialGradient>
+  </defs>
+  <!-- 5枚の花弁 -->
+  <g fill="url(#petalGrad)">
+    <ellipse cx="100" cy="55" rx="28" ry="35"/>
+    <ellipse cx="100" cy="55" rx="28" ry="35" transform="rotate(72 100 100)"/>
+    <ellipse cx="100" cy="55" rx="28" ry="35" transform="rotate(144 100 100)"/>
+    <ellipse cx="100" cy="55" rx="28" ry="35" transform="rotate(216 100 100)"/>
+    <ellipse cx="100" cy="55" rx="28" ry="35" transform="rotate(288 100 100)"/>
+  </g>
+  <!-- 花の中心 -->
+  <circle cx="100" cy="100" r="20" fill="#ffd95e"/>
+  <circle cx="94" cy="94" r="6" fill="#fff0a0" opacity="0.8"/>
+  <!-- 葉 -->
+  <path d="M135 145 Q160 145 165 165 Q150 170 135 158 Z" fill="#9cd4b8"/>
+  <path d="M135 145 Q150 155 158 162" stroke="#7ac0a0" stroke-width="2" fill="none"/>
+</svg>

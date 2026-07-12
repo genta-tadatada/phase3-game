@@ -1,0 +1,518 @@
+/* ============================================================
+   index.css — Phase3「創部」ゲームUI デザインシステム
+   テーマ: 明るい昼・パステル / 栄冠ナイン級のかわいさ・温かみ・手触り
+   横長(landscape)固定・丸ゴシック・紙(クリーム)質感。
+   ============================================================ */
+
+:root {
+  /* --- 紙・地色 --- */
+  --paper:      #fbf2e3;   /* 温かいクリーム（フレーム地） */
+  --paper-2:    #fff9f0;
+  --card:       #ffffff;
+  --card-edge:  rgba(74, 64, 54, 0.10);
+
+  /* --- インク（文字） --- */
+  --ink:      #4a4036;     /* 真っ黒を避けた温かいダーク */
+  --ink-soft: #685d50;     /* コントラスト強化（旧#7a6f63・薄すぎ対策 #41） */
+  --ink-dim:  #8a7c6b;     /* コントラスト強化（旧#a89a8a・枠と同色問題の解消） */
+
+  /* --- 芝のパステルグリーン --- */
+  --green:        #5cb98b;
+  --green-deep:   #3f9e74;
+  --green-edge:   #2f8a62;
+  --green-pastel: #c8eed9;
+
+  /* --- スポーティ・オレンジ --- */
+  --orange:        #ff9f53;
+  --orange-deep:   #f47e3c;
+  --orange-edge:   #df6c2c;
+  --orange-pastel: #ffe1c2;
+
+  /* --- 空の水色・太陽 --- */
+  --sky:        #6cc5f0;
+  --sky-pastel: #d4eefb;
+  --sun:        #ffd23f;
+
+  --good: #43b97f;
+  --bad:  #ef6a6a;
+  --warn: #ffab34;
+
+  /* --- 形状 --- */
+  --r-sm: 10px; --r: 16px; --r-lg: 22px; --r-pill: 999px;
+  --shadow-card: 0 3px 0 var(--card-edge), 0 10px 22px rgba(120, 96, 60, 0.12);
+  --shadow-soft: 0 2px 10px rgba(120, 96, 60, 0.12);
+
+  --font: 'M PLUS Rounded 1c', 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-pop: 'Mochiy Pop One', 'M PLUS Rounded 1c', 'Zen Maru Gothic', sans-serif;
+  --font-num: 'Quicksand', 'M PLUS Rounded 1c', system-ui, sans-serif;
+  font-family: var(--font);
+  font-size: 16.5px;
+  color-scheme: light;
+
+  /* --- 旧トークン互換エイリアス（既存画面を一括で新テーマに揃える） --- */
+  --accent: var(--orange-deep);
+  --accent-hot: var(--orange-edge);
+  --primary: var(--green-deep);
+  --primary-light: var(--green);
+  --text: var(--ink);
+  --text-dim: var(--ink-soft);
+  --surface: #ffffff;
+  --surface-2: #fff7ec;
+  --line: var(--card-edge);
+  --dark: var(--paper);
+  --radius: var(--r);
+  --maxw: 1120px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; }
+
+body {
+  background: #e9dcc6;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+#root { width: 100%; min-height: 100%; }
+
+/* ============================================================
+   ステージ（背景シーン）＋ 横長フレーム
+   ============================================================ */
+.stage {
+  position: fixed; inset: 0; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: #cdb9; /* fallback */
+}
+.stage-bg {
+  position: absolute; inset: -3%; width: 106%; height: 106%;
+  object-fit: cover; object-position: center;
+  filter: saturate(1.06);
+  animation: bg-fade 0.6s ease;
+}
+@keyframes bg-fade { from { opacity: 0; transform: scale(1.04); } to { opacity: 1; transform: none; } }
+.stage-veil {
+  position: absolute; inset: 0;
+  background: radial-gradient(130% 90% at 50% -5%,
+    rgba(255, 251, 244, 0.12), rgba(255, 247, 236, 0.32) 62%, rgba(250, 240, 224, 0.5));
+}
+
+.frame {
+  position: relative; z-index: 1;
+  width: min(100%, 1120px);
+  height: 100dvh;
+  /* 端末のノッチ/上端・下端のセーフエリアぶんを確保（全画面でHUDが上端に隠れて切れるのを防ぐ）。
+     box-sizing:border-box なので 100dvh の内側に padding が収まり、中身は安全領域内に並ぶ。 */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  /* 横長プレイ時はノッチが左右に来る端末がある＝側部も確保(#14) */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  display: flex; flex-direction: column;
+  /* 半透明にして背景シーン（天候連動）をうっすら見せる＝世界観の没入 */
+  background: linear-gradient(180deg, rgba(255, 249, 240, 0.9), rgba(251, 242, 227, 0.93));
+  backdrop-filter: blur(1.5px);
+  box-shadow: 0 0 0 1px rgba(74, 64, 54, 0.06), 0 24px 70px rgba(70, 50, 30, 0.28);
+  overflow: hidden;
+}
+/* デスクトップ等の広い画面ではゲームウィンドウ風に角丸＆中央 */
+@media (min-width: 1180px) {
+  .frame { height: min(100dvh, 760px); border-radius: 28px; }
+}
+/* スマホ縦向き：フレームをやや透過＋ブラー強化で、背景の天候シーンを透けて見せる
+   （生成背景の世界観・天候・クオリティが伝わるように。可読性はブラーで担保） */
+@media (max-width: 760px) {
+  /* スマホは生成背景シーンを活かすため、フレームを薄めて背景を透けさせる。
+     文字を載せるカード(.panel)は不透明なので可読性は確保される。 */
+  .frame { background: linear-gradient(180deg, rgba(255, 250, 242, 0.52), rgba(251, 243, 229, 0.6)); backdrop-filter: blur(3px); }
+  /* フレームを上端ぴったりに固定（中央寄せだと fixed なstageが100dvhより高い端末で
+     上端=HUDが切れるため）。100dvh＋上下セーフエリアで安全領域内に収める。 */
+  .stage { align-items: flex-start; }
+}
+
+/* 縦向き(ポートレート)を正式サポート＝回転案内は出さない */
+.rotate-hint { display: none !important; }
+@keyframes rotate-wobble { 0%,100% { transform: rotate(-12deg); } 50% { transform: rotate(78deg); } }
+
+/* ============================================================
+   グローバルHUD（上部ステータスリボン）
+   ============================================================ */
+.hud {
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px clamp(12px, 3vw, 22px);
+  background: linear-gradient(180deg, #ffffff, #fff5e8);
+  border-bottom: 2px solid rgba(74, 64, 54, 0.07);
+  box-shadow: 0 4px 14px rgba(120, 96, 60, 0.08);
+  z-index: 6;
+}
+.hud-crest {
+  width: 36px; height: 36px; border-radius: 11px; flex-shrink: 0;
+  display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 17px;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.14);
+}
+.hud-id { min-width: 0; }
+.hud-school { font-weight: 800; font-size: 16.5px; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hud-sub { font-size: 12px; color: var(--ink-dim); white-space: nowrap; }
+.hud-stats { margin-left: auto; display: flex; gap: 7px; }
+.hud-pill {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-width: 50px; padding: 3px 9px; border-radius: 12px; background: #fff;
+  box-shadow: inset 0 0 0 1.5px rgba(74, 64, 54, 0.09);
+}
+.hud-pill b { font-size: 16px; font-family: var(--font-num); font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.hud-pill span { font-size: 10.5px; color: var(--ink-dim); letter-spacing: 0.03em; margin-top: 1px; }
+/* スマホ(縦)では4ステータスが見切れていたので圧縮して必ず収める */
+@media (max-width: 480px) {
+  .hud { gap: 6px; padding: 6px 9px; }
+  .hud-crest { width: 30px; height: 30px; font-size: 14px; border-radius: 9px; }
+  .hud-school { font-size: 14px; }
+  .hud-sub { font-size: 10px; }
+  .hud-stats { gap: 4px; }
+  .hud-pill { min-width: 0; padding: 2px 6px; border-radius: 9px; }
+  .hud-pill b { font-size: 13px; }
+  .hud-pill span { font-size: 8.5px; letter-spacing: 0; }
+}
+
+/* ============================================================
+   画面共通レイアウト
+   ============================================================ */
+.screen {
+  flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 14px clamp(14px, 3.5vw, 36px) 10px;
+  animation: screen-in 0.34s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+@keyframes screen-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.screen::-webkit-scrollbar { width: 9px; }
+.screen::-webkit-scrollbar-thumb { background: rgba(74, 64, 54, 0.16); border-radius: 9px; border: 2px solid transparent; background-clip: padding-box; }
+
+.app-title {
+  font-size: 13px; letter-spacing: 0.2em; color: var(--orange-deep);
+  text-align: center; font-weight: 800;
+}
+.h1 { font-family: var(--font-pop); font-size: 27px; font-weight: 400; line-height: 1.3; letter-spacing: 0.01em; }
+.h2 { font-size: 19px; font-weight: 800; color: var(--ink); display: flex; align-items: center; gap: 7px; }
+.h2::before { content: ''; width: 7px; height: 19px; border-radius: 3px; background: linear-gradient(var(--orange), var(--orange-deep)); }
+.dim { color: var(--ink-soft); }
+.center { text-align: center; }
+
+/* セクション見出し（本文の中での区切り） */
+.section-label {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 800; color: var(--green-deep);
+  background: var(--green-pastel); padding: 3px 12px; border-radius: var(--r-pill);
+}
+
+/* ============================================================
+   カード / パネル
+   ============================================================ */
+.panel {
+  background: var(--card);
+  border-radius: var(--r);
+  padding: 13px 15px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(74, 64, 54, 0.04);
+}
+.panel.tint-green  { background: linear-gradient(180deg, #f3fbf6, #eafaf1); }
+.panel.tint-orange { background: linear-gradient(180deg, #fff8f0, #fff2e3); }
+.panel.tint-sky    { background: linear-gradient(180deg, #f3fbff, #e9f6ff); }
+.panel.accent { border: 2px solid var(--orange); box-shadow: 0 0 0 4px var(--orange-pastel), var(--shadow-card); }
+
+/* ============================================================
+   ボタン（キャンディ・3D・押し心地）
+   ============================================================ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; border: none; border-radius: 15px;
+  padding: 15px 20px; font-family: var(--font); font-size: 17.5px; font-weight: 800;
+  color: #6a3410; cursor: pointer; user-select: none;
+  background: linear-gradient(180deg, #ffb368, #ff9540);
+  box-shadow: 0 4px 0 var(--orange-edge), 0 8px 16px rgba(244, 126, 60, 0.30);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.15s ease;
+}
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--orange-edge), 0 3px 8px rgba(244, 126, 60, 0.28); }
+.btn:disabled { background: linear-gradient(180deg, #e7ddcf, #ddd1bf); color: #b3a692; box-shadow: 0 3px 0 #cabda6; cursor: not-allowed; transform: none; }
+.btn.secondary {
+  color: #135636; background: linear-gradient(180deg, #74cfa1, #4cb083);
+  box-shadow: 0 4px 0 var(--green-edge), 0 8px 16px rgba(63, 158, 116, 0.28);
+}
+.btn.secondary:active { box-shadow: 0 1px 0 var(--green-edge), 0 3px 8px rgba(63, 158, 116, 0.26); }
+.btn.ghost {
+  color: var(--ink); background: #fff;
+  box-shadow: 0 3px 0 rgba(74, 64, 54, 0.12), 0 4px 10px rgba(120, 96, 60, 0.10);
+}
+.btn.ghost:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(74, 64, 54, 0.12); }
+.btn.ghost:disabled { color: var(--ink-dim); background: #f4eee3; box-shadow: 0 3px 0 rgba(74,64,54,0.08); }
+.btn.sm { padding: 10px 14px; font-size: 14.5px; border-radius: 12px; box-shadow: 0 3px 0 var(--orange-edge); }
+.btn.sm:active { box-shadow: 0 1px 0 var(--orange-edge); }
+/* 大型ボタン（タイトル等のヒーロー用） */
+.btn.lg { padding: 15px 20px; font-size: 17px; border-radius: 16px; letter-spacing: 0.02em; box-shadow: 0 5px 0 var(--orange-edge), 0 12px 26px rgba(244,126,60,0.34); }
+.btn.lg:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--orange-edge), 0 4px 10px rgba(244,126,60,0.3); }
+.btn.lg.secondary { box-shadow: 0 5px 0 var(--green-edge), 0 12px 26px rgba(63,158,116,0.3); }
+.btn.lg.secondary:active { box-shadow: 0 1px 0 var(--green-edge); }
+
+/* タイトル ヒーロー */
+.title-hero { padding: 0 !important; position: relative; overflow: hidden; justify-content: flex-end; }
+.title-hero .hero-bg { position: absolute; inset: 0; background-color: #3f7d52; background-image: linear-gradient(170deg, #6bbf86 0%, #4aa86c 42%, #2f7d4e 100%); background-size: cover; background-position: center; transform: scale(1.04); animation: hero-zoom 18s ease-in-out infinite alternate; }
+@keyframes hero-zoom { from { transform: scale(1.04); } to { transform: scale(1.12); } }
+@keyframes float-logo { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+/* 試合ピッチ演出 */
+@keyframes net-shake { 0%{transform:translateX(0)} 25%{transform:translateX(0.7px)} 50%{transform:translateX(-0.7px)} 75%{transform:translateX(0.4px)} 100%{transform:translateX(0)} }
+.net-shake { animation: net-shake 0.4s ease 2; }
+@keyframes crowd-cheer { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.crowd-cheer { animation: crowd-cheer 0.22s ease 3; }
+@keyframes pitch-shake { 0%,100%{transform:translate(0,0)} 20%{transform:translate(-2px,1px)} 40%{transform:translate(2px,-1px)} 60%{transform:translate(-1.5px,-1px)} 80%{transform:translate(1.5px,1px)} }
+.pitch-shake { animation: pitch-shake 0.4s ease; }
+/* 一発レッド演出：赤い画面フラッシュ（短く強く消える）＝ゴールと同等の存在感だが祝祭でなく重み */
+@keyframes red-flash { 0%{opacity:0} 12%{opacity:1} 100%{opacity:0} }
+.red-flash { animation: red-flash 1s ease-out forwards; }
+@keyframes moment-cut { 0%{opacity:0; transform:translateY(8px) scale(0.85)} 18%{opacity:1; transform:translateY(0) scale(1.06)} 30%{transform:scale(1)} 100%{opacity:1; transform:scale(1)} }
+.moment-cut { animation: moment-cut 0.4s cubic-bezier(0.2,0.8,0.2,1); }
+
+/* 天候エフェクト（素材不要・CSSで雨/雪/猛暑/寒波/晴れ/曇りを可視化） */
+.wfx { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: hidden; }
+.wfx-layer { position: absolute; inset: -25%; }
+.wfx-rain { background: repeating-linear-gradient(105deg, rgba(160,190,230,0) 0 12px, rgba(150,180,225,0.28) 12px 13px); animation: wfx-rain 0.5s linear infinite; opacity: 0.28; }
+@keyframes wfx-rain { from { transform: translateY(-8%) translateX(2%);} to { transform: translateY(8%) translateX(-2%);} }
+.wfx-snow1 { background-image: radial-gradient(2px 2px at 20px 30px,#fff,transparent), radial-gradient(2px 2px at 90px 70px,#fff,transparent), radial-gradient(1.5px 1.5px at 140px 20px,#fff,transparent), radial-gradient(2px 2px at 50px 120px,#fff,transparent); background-size: 170px 170px; animation: wfx-snow 7s linear infinite; opacity: 0.85; }
+.wfx-snow2 { background-image: radial-gradient(1.5px 1.5px at 60px 90px,#fff,transparent), radial-gradient(2px 2px at 120px 40px,#fff,transparent), radial-gradient(1.5px 1.5px at 30px 150px,#fff,transparent); background-size: 210px 210px; animation: wfx-snow 11s linear infinite; opacity: 0.6; }
+@keyframes wfx-snow { from { transform: translateY(-18%);} to { transform: translateY(18%);} }
+.wfx-tint { position: absolute; inset: 0; }
+.wfx-hot { background: radial-gradient(120% 80% at 50% 0%, rgba(255,170,70,0.2), rgba(255,110,40,0.08) 70%); }
+.wfx-cold { background: linear-gradient(180deg, rgba(150,195,255,0.2), rgba(110,155,225,0.12)); }
+.wfx-cloud { background: rgba(110,116,126,0.16); }
+.wfx-sun { background: radial-gradient(55% 45% at 84% 6%, rgba(255,242,180,0.42), transparent 62%); }
+.wfx-rainT { background: linear-gradient(180deg, rgba(120,140,170,0.14), rgba(90,110,150,0.1)); }
+.title-hero .hero-scrim { position: absolute; inset: 0; background:
+  linear-gradient(180deg, rgba(18,38,24,0.12) 0%, rgba(18,33,21,0.02) 30%, rgba(14,30,18,0.5) 74%, rgba(10,24,14,0.82) 100%); }
+.title-hero .hero-content { position: relative; z-index: 2; display: flex; flex-direction: column; min-height: 100%; padding: clamp(14px,4.5vh,46px) clamp(18px,5vw,48px) clamp(16px,4vh,40px); }
+/* タイトルロゴ：横向きで縦が短い時も潰れないよう高さを制限し、はみ出しを防ぐ */
+.title-hero .hero-logo { width: clamp(300px, 78vw, 620px); max-width: 96%; max-height: 52vh; object-fit: contain; }
+.title-hero .hero-buttons { flex-shrink: 0; }
+/* 横向きで縦が短い端末（URLバーで圧迫される時など）はタイトルを圧縮して必ず収める */
+@media (max-height: 540px) {
+  .title-hero .hero-content { padding: 8px 16px 10px; }
+  .title-hero .hero-logo { max-height: 36vh; }
+  .title-hero .title-tagline { font-size: 13px; }
+  .title-hero .hero-buttons { gap: 7px !important; }
+  .title-hero .btn.lg { padding: 9px 16px; font-size: 15px; }
+}
+.title-tagline { color: #fff; font-family: var(--font-pop); font-size: clamp(15px,2.4vh,20px); text-shadow: 0 2px 8px rgba(0,0,0,0.5), 0 1px 0 rgba(0,0,0,0.3); letter-spacing: 0.04em; text-align: center; }
+
+/* 固定フッターの主アクション（フレーム内sticky） */
+.footer-cta {
+  position: sticky; bottom: 0; margin-top: auto;
+  padding: 10px 0 calc(8px + env(safe-area-inset-bottom));
+  background: linear-gradient(0deg, var(--paper) 66%, transparent);
+  z-index: 5;
+}
+/* 下タブは枠内の最下段(flex要素)に常駐するため、footer-ctaは通常のsticky bottom:0で
+   タブのすぐ上に収まる（PCのウィンドウでもスマホでも枠に密着）。特別な余白ハックは不要。 */
+
+/* ============================================================
+   フォーム
+   ============================================================ */
+.input, select.input {
+  width: 100%; background: #fff; color: var(--ink);
+  border: 2px solid rgba(74, 64, 54, 0.12); border-radius: 12px;
+  padding: 12px 14px; font-family: var(--font); font-size: 16px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.input:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 4px var(--orange-pastel); }
+.label { font-size: 13px; font-weight: 700; color: var(--ink-soft); margin-bottom: 6px; display: block; }
+
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  border: 2px solid rgba(74, 64, 54, 0.14); background: #fff; color: var(--ink-soft);
+  border-radius: var(--r-pill); padding: 9px 14px; min-height: 42px; font-size: 14px; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.12s ease;
+}
+.chip:active { transform: scale(0.95); }
+.chip.active {
+  background: linear-gradient(180deg, #ffb368, #ff9540); color: #6a3410;
+  border-color: var(--orange-deep); box-shadow: 0 3px 0 var(--orange-edge);
+}
+
+/* ============================================================
+   能力バー
+   ============================================================ */
+.stat-row { display: flex; align-items: center; gap: 8px; margin: 3px 0; }
+.stat-name { width: 60px; font-size: 13px; font-weight: 700; color: var(--ink-soft); flex-shrink: 0; }
+.stat-track { flex: 1; height: 10px; background: rgba(74, 64, 54, 0.14); border-radius: 5px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(74,64,54,0.10); }
+.stat-fill { display: block; height: 100%; border-radius: 5px; background: linear-gradient(90deg, #4fb487 0%, #8fd06a 45%, #ffb347 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.45); transition: width 0.5s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.stat-val { width: 26px; text-align: right; font-size: 14.5px; font-weight: 700; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   選手カード・アバター・ポジションバッジ
+   ============================================================ */
+.avatar {
+  border-radius: 50%; background: #fef5e7; flex-shrink: 0;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.8), 0 2px 5px rgba(120, 96, 60, 0.18);
+}
+.player-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 11px; border-radius: 13px;
+  background: #fff; box-shadow: var(--shadow-card);
+  transition: transform 0.1s ease;
+}
+.player-card:active { transform: scale(0.98); }
+.pos-badge {
+  width: 30px; height: 30px; flex-shrink: 0; border-radius: 9px;
+  display: grid; place-items: center; font-weight: 800; font-size: 12px; color: #fff;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.16);
+}
+
+/* 選手一覧グリッド（能力一目） */
+.roster-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(154px, 1fr)); gap: 10px;
+}
+.pcard {
+  position: relative; background: #fff; border-radius: 15px; padding: 10px;
+  box-shadow: var(--shadow-card); cursor: pointer; transition: transform 0.1s ease, box-shadow 0.1s ease;
+  display: flex; flex-direction: column; gap: 7px; border: 2px solid transparent;
+}
+.pcard:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--card-edge), 0 14px 26px rgba(120, 96, 60, 0.16); }
+.pcard.starter { border-color: var(--orange); }
+/* #75: 怪我中の選手カードは赤帯+斜線パターンで一目で分かるように */
+.pcard.injured { border-color: #c43b3b; background: repeating-linear-gradient(135deg, #fff 0 12px, #fff5f3 12px 24px); }
+.pcard.injured::before {
+  content: '🚑 怪我'; position: absolute; top: 0; left: 0; right: 0;
+  background: #c43b3b; color: #fff; font-size: 10.5px; font-weight: 800; letter-spacing: 0.04em;
+  padding: 2px 0; text-align: center; border-top-left-radius: 13px; border-top-right-radius: 13px;
+}
+.pcard.injured { padding-top: 22px; }
+.pcard-top { display: flex; align-items: center; gap: 8px; }
+.pcard-name { font-weight: 800; font-size: 14.5px; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pcard-meta { font-size: 11.5px; color: var(--ink-dim); }
+.rank-badge {
+  font-family: var(--font-num); font-weight: 700; font-size: 11px; color: #fff;
+  padding: 2px 8px; border-radius: var(--r-pill); white-space: nowrap;
+}
+/* 栄冠ナイン風 能力値グリッド（数値＋色） */
+.ab-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-top: 1px;
+  background: #faf6ee; border-radius: 8px; padding: 4px 2px; }
+.ab-cell { display: flex; flex-direction: column; align-items: center; line-height: 1.04; }
+.ab-k { font-size: 8.5px; color: var(--ink-dim); font-weight: 700; }
+.ab-v { font-size: 14.5px; font-weight: 800; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   スコアボード / 試合
+   ============================================================ */
+.scoreboard {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  font-family: var(--font-num); font-variant-numeric: tabular-nums;
+}
+.score-num { font-size: 46px; font-weight: 700; line-height: 1; color: var(--ink); }
+.clock { font-size: 14px; color: var(--orange-deep); font-weight: 800; }
+.pitch-wrap { width: 100%; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-card); }
+
+.feed { display: flex; flex-direction: column; gap: 6px; }
+.feed-line {
+  font-size: 14.5px; padding: 9px 12px; border-radius: 10px;
+  background: #fff; box-shadow: var(--shadow-soft); animation: feed-in 0.3s ease;
+}
+@keyframes feed-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+.feed-line.goal { background: linear-gradient(180deg, #fff1dd, #ffe6c4); box-shadow: 0 0 0 2px var(--orange) inset, var(--shadow-soft); font-weight: 800; }
+
+/* ============================================================
+   トーナメント・ブラケット
+   ============================================================ */
+.bracket-match {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 8px 11px; border-radius: 11px; font-size: 13px;
+  background: #fff; box-shadow: var(--shadow-soft);
+}
+.bracket-team { display: flex; justify-content: space-between; gap: 8px; }
+.bracket-team.win { color: var(--green-deep); font-weight: 800; }
+.bracket-team.lose { color: var(--ink-dim); }
+.you-tag { font-size: 10px; background: var(--orange); color: #fff; border-radius: 5px; padding: 0 6px; font-weight: 800; }
+
+/* ============================================================
+   バッジ・タグ
+   ============================================================ */
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: var(--r-pill);
+  background: rgba(74, 64, 54, 0.07); color: var(--ink-soft);
+}
+.tag.skill { background: var(--green-pastel); color: var(--green-edge); }
+.tag.captain { background: var(--sun); color: #7a5a00; }
+
+/* 練習メニューの「伸びる能力」チップ */
+.gain-chip { font-size: 11.5px; font-weight: 800; padding: 2px 8px; border-radius: var(--r-pill); white-space: nowrap; }
+
+/* イベント前面吹き出し（操作画面の前後に出る） */
+.event-overlay {
+  position: fixed; inset: 0; z-index: 60;
+  /* 縦が短い端末（スマホ横向き等）でもカードが見切れず、はみ出せばスクロールできるように */
+  display: flex; flex-direction: column; align-items: center; overflow-y: auto;
+  background: rgba(60, 48, 36, 0.42); backdrop-filter: blur(3px);
+  padding: 56px 16px 20px; animation: feed-in 0.25s ease;
+}
+/* 直接の子は縦中央。中身が高い時は margin:auto が畳まれ、上から流れてスクロール可能になる */
+.event-overlay > * { margin: auto 0; flex-shrink: 0; }
+.event-card {
+  background: linear-gradient(180deg, #ffffff, #fff8ee);
+  border-radius: 22px; box-shadow: var(--shadow-card), 0 18px 50px rgba(70, 50, 30, 0.3);
+  /* F1.5: PCで横幅を活かす。スマホは94vwで現状維持・タブレット/PCは最大640px */
+  max-width: min(94vw, 640px); width: 100%; padding: 14px 18px 18px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.event-illust-wrap { width: 148px; height: 148px; margin-top: -54px; flex-shrink: 0; }
+.event-illust { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.18)); animation: bob 3.4s ease-in-out infinite; }
+.event-body-wrap { width: 100%; }
+.event-title { font-weight: 800; font-size: 17px; color: var(--orange-deep); text-align: center; }
+.event-text { font-size: 14.5px; line-height: 1.75; margin-top: 6px; color: var(--ink); }
+.event-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; justify-content: center; }
+.event-actions .btn { width: auto; flex: 1 1 40%; }
+
+/* マスコット吹き出し */
+.mascot-row { display: flex; align-items: flex-end; gap: 10px; }
+.mascot-img { width: 76px; height: 76px; object-fit: contain; flex-shrink: 0; animation: bob 3s ease-in-out infinite; }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes tut-pulse { 0%,100% { box-shadow: 0 0 0 9999px rgba(28,22,16,0.6); border-color: rgba(255,255,255,1); } 50% { box-shadow: 0 0 0 9999px rgba(28,22,16,0.6); border-color: rgba(255,255,255,0.45); } }
+.bubble {
+  position: relative; background: #fff; border-radius: 16px; padding: 11px 14px;
+  box-shadow: var(--shadow-card); font-size: 15px; line-height: 1.7; flex: 1;
+  word-break: keep-all; line-break: strict; overflow-wrap: anywhere;
+}
+.bubble::after {
+  content: ''; position: absolute; left: -8px; bottom: 16px;
+  border: 8px solid transparent; border-right-color: #fff; border-left: 0;
+}
+
+/* ============================================================
+   ユーティリティ・アニメーション
+   ============================================================ */
+.row { display: flex; gap: 10px; }
+.row > * { flex: 1; }
+.cols { display: grid; gap: 12px; }
+@media (min-width: 620px) { .cols.c2 { grid-template-columns: 1fr 1fr; } .cols.c2-31 { grid-template-columns: 3fr 2fr; } }
+.gap { height: 12px; } .gap-sm { height: 8px; } .spacer { flex: 1; }
+.muted-card { opacity: 0.55; }
+.trophy { font-size: 60px; text-align: center; line-height: 1; filter: drop-shadow(0 6px 10px rgba(244,126,60,0.3)); }
+
+@keyframes goal-pop {
+  0% { transform: scale(0.3); opacity: 0; }
+  25% { transform: scale(1.18); opacity: 1; }
+  70% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.06); opacity: 0; }
+}
+.goal-pop > span { display: inline-block; animation: goal-pop 0.9s ease forwards; }
+
+@keyframes pop-in { 0% { transform: scale(0.7); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+.pop-in { animation: pop-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1.2) both; }
+
+@keyframes sparkle { 0%,100% { opacity: 0.3; transform: scale(0.8) rotate(0); } 50% { opacity: 1; transform: scale(1.15) rotate(20deg); } }
+.sparkle { animation: sparkle 1.4s ease-in-out infinite; }
+
+@keyframes float-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.float-up { animation: float-up 0.5s ease both; }
+
+@keyframes confetti-fall {
+  0% { transform: translateY(0) rotate(0); opacity: 1; }
+  100% { transform: translateY(115vh) rotate(540deg); opacity: 0.9; }
+}

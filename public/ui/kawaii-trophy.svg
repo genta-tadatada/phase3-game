@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <!-- カップ本体：ゴールドの立体グラデ（4ストップ） -->
+    <linearGradient id="cupBody" x1="20%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0%" stop-color="#fff3c4"/>
+      <stop offset="35%" stop-color="#fde68a"/>
+      <stop offset="70%" stop-color="#f5c64b"/>
+      <stop offset="100%" stop-color="#e0a82e"/>
+    </linearGradient>
+    <!-- 取っ手のゴールド -->
+    <linearGradient id="cupHandle" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="100%" stop-color="#e0a82e"/>
+    </linearGradient>
+    <!-- 台座（ラベンダー立体） -->
+    <linearGradient id="baseGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ddd6fe"/>
+      <stop offset="100%" stop-color="#a78bda"/>
+    </linearGradient>
+    <linearGradient id="baseTop" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="100%" stop-color="#c4b5fd"/>
+    </linearGradient>
+    <!-- 星のグラデ -->
+    <radialGradient id="starGrad" cx="40%" cy="32%" r="70%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#fff0c0"/>
+    </radialGradient>
+    <!-- つやの帯 -->
+    <linearGradient id="cupSheen" x1="20%" y1="5%" x2="55%" y2="90%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#ffffff" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="trophyShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#b88bd8" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#b88bd8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 接地のソフトシャドウ -->
+  <ellipse cx="100" cy="176" rx="52" ry="13" fill="url(#trophyShadow)"/>
+
+  <!-- お祝いのキラ（奥） -->
+  <path d="M38 30 C40 35 43 38 48 40 C43 42 40 45 38 50 C36 45 33 42 28 40 C33 38 36 35 38 30 Z" fill="#f9a8d4"/>
+  <path d="M163 38 C164.6 41.5 167 43.8 170.5 45.4 C167 47 164.6 49.3 163 52.8 C161.4 49.3 159 47 155.5 45.4 C159 43.8 161.4 41.5 163 38 Z" fill="#6ee7b7"/>
+  <circle cx="28" cy="98" r="4" fill="#c4b5fd"/>
+  <circle cx="174" cy="104" r="3.5" fill="#fde68a"/>
+
+  <!-- 台座（下段・上段に立体差） -->
+  <rect x="72" y="150" width="56" height="17" rx="6" fill="url(#baseGrad)"/>
+  <rect x="72" y="150" width="56" height="6" rx="3" fill="#ede9fe" opacity="0.7"/>
+  <rect x="83" y="133" width="34" height="20" rx="5" fill="url(#baseTop)"/>
+
+  <!-- カップ本体（有機的なベジェ曲線） -->
+  <path d="M62 46
+           C 62 44 64 44 66 44
+           L 134 44
+           C 136 44 138 44 138 46
+           L 132 90
+           C 129 116 117 124 100 124
+           C 83 124 71 116 68 90 Z"
+        fill="url(#cupBody)"/>
+
+  <!-- 取っ手（左右・グラデ） -->
+  <path d="M64 52 Q38 52 38 74 Q38 94 64 94" fill="none" stroke="url(#cupHandle)" stroke-width="9" stroke-linecap="round"/>
+  <path d="M136 52 Q162 52 162 74 Q162 94 136 94" fill="none" stroke="url(#cupHandle)" stroke-width="9" stroke-linecap="round"/>
+
+  <!-- カップ→台座の首 -->
+  <path d="M88 124 L112 124 L108 133 L92 133 Z" fill="url(#cupBody)"/>
+
+  <!-- つやの帯（斜め光） -->
+  <path d="M62 46 C 62 44 64 44 66 44 L 134 44 C 136 44 138 44 138 46 L 132 90 C 129 116 117 124 100 124 C 83 124 71 116 68 90 Z"
+        fill="url(#cupSheen)"/>
+  <!-- 縦のハイライト -->
+  <ellipse cx="82" cy="68" rx="6" ry="20" fill="#ffffff" opacity="0.55"/>
+  <circle cx="118" cy="60" r="4" fill="#ffffff" opacity="0.6"/>
+
+  <!-- 星マーク（グラデ＋ふち） -->
+  <path d="M100 60
+           L106 76 L123 77 L110 88 L114 105 L100 95 L86 105 L90 88 L77 77 L94 76 Z"
+        fill="url(#starGrad)" stroke="#f5c64b" stroke-width="2" stroke-linejoin="round"/>
+  <ellipse cx="94" cy="73" rx="4" ry="2.5" fill="#ffffff" opacity="0.9" transform="rotate(-20 94 73)"/>
+</svg>

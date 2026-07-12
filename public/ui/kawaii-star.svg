@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <radialGradient id="starGrad" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#fff0a0"/>
+      <stop offset="100%" stop-color="#ffb83d"/>
+    </radialGradient>
+  </defs>
+  <!-- 5芒星（丸みのある角） -->
+  <path d="M100 40
+           L118 78
+           L160 84
+           L130 114
+           L137 156
+           L100 136
+           L63 156
+           L70 114
+           L40 84
+           L82 78 Z"
+        fill="url(#starGrad)" stroke-linejoin="round" stroke-width="8" stroke="url(#starGrad)"/>
+  <!-- ハイライト -->
+  <ellipse cx="80" cy="75" rx="12" ry="6" fill="#fff9d6" opacity="0.8" transform="rotate(-20 80 75)"/>
+  <!-- 閃き線 -->
+  <g stroke="#ffb83d" stroke-width="4" stroke-linecap="round">
+    <line x1="155" y1="35" x2="167" y2="28"/>
+    <line x1="170" y1="55" x2="183" y2="55"/>
+    <line x1="160" y1="75" x2="175" y2="82"/>
+  </g>
+</svg>

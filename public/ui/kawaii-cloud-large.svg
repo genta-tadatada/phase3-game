@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 160" fill="none">
+  <defs>
+    <radialGradient id="cloudLgGrad" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e8edf5"/>
+    </radialGradient>
+  </defs>
+  <g fill="url(#cloudLgGrad)">
+    <circle cx="60" cy="95" r="35"/>
+    <circle cx="105" cy="70" r="42"/>
+    <circle cx="160" cy="68" r="38"/>
+    <circle cx="205" cy="95" r="32"/>
+    <ellipse cx="130" cy="110" rx="80" ry="25"/>
+  </g>
+  <ellipse cx="95" cy="55" rx="15" ry="6" fill="#ffffff" opacity="0.85"/>
+  <ellipse cx="160" cy="55" rx="10" ry="4" fill="#ffffff" opacity="0.85"/>
+</svg>

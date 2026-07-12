@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <!-- 箱の前面：ラベンダーの立体グラデ（3ストップ・左上光源） -->
+    <radialGradient id="boxFront" cx="35%" cy="30%" r="85%">
+      <stop offset="0%" stop-color="#ede9fe"/>
+      <stop offset="55%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#9d83e8"/>
+    </radialGradient>
+    <!-- 箱の側面：少し濃いめ（陰側） -->
+    <linearGradient id="boxSide" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b6a3f0"/>
+      <stop offset="100%" stop-color="#8b6fd6"/>
+    </linearGradient>
+    <!-- 箱の上フチ（明るい面） -->
+    <linearGradient id="boxTop" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f4f0ff"/>
+      <stop offset="100%" stop-color="#d7ccfb"/>
+    </linearGradient>
+    <!-- フタの内側（明るい） -->
+    <linearGradient id="flapIn" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f4f0ff"/>
+      <stop offset="100%" stop-color="#ddd6fe"/>
+    </linearGradient>
+    <!-- フタの外側（やや濃い） -->
+    <linearGradient id="flapOut" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#cdbffb"/>
+      <stop offset="100%" stop-color="#a98fe6"/>
+    </linearGradient>
+    <!-- 中の空っぽな暗がり（深さ） -->
+    <radialGradient id="boxInner" cx="50%" cy="20%" r="90%">
+      <stop offset="0%" stop-color="#7c5fc9"/>
+      <stop offset="100%" stop-color="#5b3fa3"/>
+    </radialGradient>
+    <!-- はてなマークのグラデ -->
+    <radialGradient id="qGrad" cx="38%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#fde8f4"/>
+      <stop offset="55%" stop-color="#f9a8d4"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </radialGradient>
+    <!-- 斜めのつや帯（前面） -->
+    <linearGradient id="boxSheen" x1="15%" y1="5%" x2="65%" y2="85%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7"/>
+      <stop offset="45%" stop-color="#ffffff" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <!-- 接地シャドウ -->
+    <radialGradient id="boxShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7c5fc9" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#7c5fc9" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 接地のソフトシャドウ -->
+  <ellipse cx="100" cy="168" rx="58" ry="13" fill="url(#boxShadow)"/>
+
+  <!-- 上に浮かぶ「？」マーク（困り＝空状態） -->
+  <g transform="rotate(8 132 40)">
+    <path d="M124 30
+             C124 21 131 16 139 16
+             C148 16 154 22 154 30
+             C154 39 146 41 144 46
+             C143 49 143 51 143 53"
+          fill="none" stroke="url(#qGrad)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="143" cy="63" r="5.5" fill="url(#qGrad)"/>
+    <ellipse cx="135" cy="26" rx="3" ry="2" fill="#ffffff" opacity="0.85" transform="rotate(-25 135 26)"/>
+  </g>
+  <!-- 小さなキラ（散らし） -->
+  <circle cx="44" cy="56" r="4" fill="#fde68a"/>
+  <circle cx="166" cy="92" r="3.5" fill="#a7f3d0"/>
+  <path d="M40 110 C41 113 43 115 46 116 C43 117 41 119 40 122 C39 119 37 117 34 116 C37 115 39 113 40 110 Z" fill="#fbcfe8"/>
+
+  <!-- 開いたフタ（外側→内側で奥行き・左右ハの字） -->
+  <path d="M48 76 L78 52 L100 60 L70 84 Z" fill="url(#flapOut)"/>
+  <path d="M70 84 L100 60 L100 70 L72 92 Z" fill="url(#flapIn)" opacity="0.85"/>
+  <path d="M152 76 L122 52 L100 60 L130 84 Z" fill="url(#flapOut)"/>
+  <path d="M130 84 L100 60 L100 70 L128 92 Z" fill="url(#flapIn)" opacity="0.85"/>
+
+  <!-- 箱本体：上面（開口）→ 中の暗がり -->
+  <path d="M58 92
+           C58 90 60 89 62 89
+           L138 89
+           C140 89 142 90 142 92
+           L116 104
+           C112 106 88 106 84 104 Z" fill="url(#boxTop)"/>
+  <!-- 中の空っぽ -->
+  <path d="M64 94 L100 105 L136 94 L116 103 C112 105 88 105 84 103 Z" fill="url(#boxInner)"/>
+  <ellipse cx="100" cy="100" rx="34" ry="7" fill="url(#boxInner)"/>
+
+  <!-- 箱の前面（左面・右面で立体） -->
+  <path d="M64 99 L100 110 L100 158 C100 161 98 162 95 161 L66 152 C64 151 62 149 62 146 L60 102 Z" fill="url(#boxFront)"/>
+  <path d="M136 99 L100 110 L100 158 C100 161 102 162 105 161 L134 152 C136 151 138 149 138 146 L140 102 Z" fill="url(#boxSide)"/>
+
+  <!-- 前面の斜めつや帯 -->
+  <path d="M64 99 L100 110 L100 158 C100 161 98 162 95 161 L66 152 C64 151 62 149 62 146 L60 102 Z" fill="url(#boxSheen)"/>
+  <!-- つや玉ハイライト -->
+  <ellipse cx="74" cy="118" rx="9" ry="5" fill="#ffffff" opacity="0.5" transform="rotate(20 74 118)"/>
+  <circle cx="85" cy="113" r="2.6" fill="#ffffff" opacity="0.7"/>
+
+  <!-- かわいい困り顔（前面に） -->
+  <g>
+    <!-- 八の字まゆ -->
+    <path d="M72 122 Q78 119 83 123" fill="none" stroke="#5b3fa3" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M93 124 Q99 121 104 125" fill="none" stroke="#5b3fa3" stroke-width="2.4" stroke-linecap="round"/>
+    <!-- 目 ´•ω•` 系 -->
+    <circle cx="78" cy="130" r="3.4" fill="#5b3fa3"/>
+    <circle cx="98" cy="132" r="3.4" fill="#5b3fa3"/>
+    <circle cx="79.2" cy="129" r="1.1" fill="#ffffff"/>
+    <circle cx="99.2" cy="131" r="1.1" fill="#ffffff"/>
+    <!-- 困り口 ω -->
+    <path d="M83 140 Q88 137 92 140 Q96 137 101 140" fill="none" stroke="#5b3fa3" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- ほっぺ -->
+    <ellipse cx="71" cy="138" rx="5" ry="3.6" fill="#fbcfe8" opacity="0.8"/>
+    <ellipse cx="106" cy="140" rx="5" ry="3.6" fill="#fbcfe8" opacity="0.8"/>
+  </g>
+</svg>

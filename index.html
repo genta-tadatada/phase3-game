@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- viewport-fit=cover: iOSでノッチ端末のセーフエリア(env(safe-area-inset-*))を有効化＝上部/側部の見切れ防止(#14) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <!-- 検索エンジン全面拒否（一時テスト版・将来の本番との複製誤認を防ぐ） -->
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+    <meta name="googlebot" content="noindex, nofollow" />
+    <!-- 更新時の白画面対策（保険）：ブラウザに index.html をキャッシュさせず、毎回ハッシュ付きJSの最新名を取得させる。
+         仕様上ブラウザが http-equiv を無視できる場合もあるため、サーバ側Cache-Control（Cloudflare）と併用。 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>高校サッカー部｜ただタダ games</title>
+    <meta name="description" content="創部から全国制覇を目指す、育成×経営の高校サッカー部・監督シミュレーション。ブラウザで無料、すぐに遊べます。" />
+    <meta name="theme-color" content="#fbf2e3" />
+    <!-- iOS全画面対応(#14): Fullscreen APIは非対応のため、「ホーム画面に追加」で standalone 起動＝全画面化する。 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="高校サッカー部" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800;900&family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@500;700;900&family=Quicksand:wght@500;700&display=swap" rel="stylesheet" />
+    <!-- F2: 序盤に確実に表示される重要画像をプリロード（回線が弱くてもタイトル/マスコットの遅延を抑える） -->
+    <link rel="preload" as="image" href="./title-logo.webp" />
+    <link rel="preload" as="image" href="./bg/title.webp" />
+    <link rel="preload" as="image" href="./mascot/coach.webp" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

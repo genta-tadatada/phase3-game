@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" fill="none">
+  <defs>
+    <radialGradient id="bubCloudGrad" cx="40%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#e0d5ff"/>
+      <stop offset="100%" stop-color="#b8a4ff"/>
+    </radialGradient>
+  </defs>
+  <!-- 雲形の本体（複数の円で構成） -->
+  <g fill="url(#bubCloudGrad)">
+    <circle cx="70" cy="80" r="35"/>
+    <circle cx="115" cy="60" r="40"/>
+    <circle cx="170" cy="75" r="36"/>
+    <circle cx="195" cy="105" r="28"/>
+    <circle cx="155" cy="125" r="32"/>
+    <circle cx="100" cy="125" r="34"/>
+    <circle cx="55" cy="115" r="26"/>
+    <!-- しっぽ（小さい円2つ） -->
+    <circle cx="75" cy="150" r="10"/>
+    <circle cx="62" cy="165" r="6"/>
+  </g>
+  <!-- ハイライト -->
+  <ellipse cx="100" cy="50" rx="18" ry="6" fill="#ffffff" opacity="0.6"/>
+  <!-- 上の閃き -->
+  <g stroke="#9d85ee" stroke-width="3" stroke-linecap="round">
+    <line x1="200" y1="25" x2="200" y2="36"/>
+    <line x1="215" y1="32" x2="223" y2="26"/>
+    <line x1="185" y1="32" x2="178" y2="26"/>
+  </g>
+</svg>
