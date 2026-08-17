@@ -12,9 +12,11 @@
     "binding": "ASSETS"
   },
 
-  // 末尾スラッシュあり/なし両方を横取りする（なしは worker.js が301で寄せる）。
+  // Cloudflareのルートは「クエリ文字列を含むURL全体」に対して照合される。
+  // そのため完全一致 `…/games/football` では `…/games/football?utm=x` を取りこぼし、
+  // phase1(Pages)の404に落ちる（2026-08-17 実測）。末尾 `*` の1本にまとめて全部拾う。
+  // `/games/footballXYZ` のような近傍パスも来るが、worker.js 側で404を返す。
   "routes": [
-    { "pattern": "tadatada.net/games/football", "zone_name": "tadatada.net" },
-    { "pattern": "tadatada.net/games/football/*", "zone_name": "tadatada.net" }
+    { "pattern": "tadatada.net/games/football*", "zone_name": "tadatada.net" }
   ]
 }

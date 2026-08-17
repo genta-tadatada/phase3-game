@@ -22,10 +22,18 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url)
 
-    // 末尾スラッシュなしの入口は正規URL（末尾スラッシュ付き）へ寄せる
+    // 末尾スラッシュなしの入口は正規URL（末尾スラッシュ付き）へ寄せる。
+    // url.search はそのまま引き継がれるので ?utm=… 付きでも落ちない
     if (url.pathname === PREFIX) {
       url.pathname = PREFIX + '/'
       return Response.redirect(url.toString(), 301)
+    }
+
+    // ルートを `…/games/football*` の1本にまとめた副作用で `/games/footballXYZ` の
+    // ような近傍パスもここへ来る。ゲームのURL空間ではないので素直に404を返す
+    // （index.htmlを返すと存在しないURLでゲームが起動してしまう）。
+    if (url.pathname[PREFIX.length] !== '/') {
+      return new Response('Not Found', { status: 404 })
     }
 
     // /games/football プレフィックスを剥がして実アセットのパスへ変換
@@ -36,8 +44,8 @@ export default {
     //    その307がそのままブラウザへ渡ると Location: / ＝サイトルート（phase1ポータル）
     //    へ着地する。「/games/football/ を開くとポータルに飛ぶ」の正体がこれ
     //    （2026-08-17 特定。画像やrobots.txtは200で返っていたためルート自体は正常だった）。
-    let assetPath = url.pathname.slice(PREFIX.length)
-    if (assetPath === '' || assetPath === '/' || assetPath === '/index.html') assetPath = INDEX
+    let assetPath = url.pathname.slice(PREFIX.length) // 必ず '/' 始まり（上のガード済み）
+    if (assetPath === '/' || assetPath === '/index.html') assetPath = INDEX
     url.pathname = assetPath
 
     const res = await env.ASSETS.fetch(new Request(url, request))
