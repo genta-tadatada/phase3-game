@@ -528,7 +528,13 @@ export function HowToPlay({ onClose }: { onClose: () => void }) {
         </div>
 
         <button className="btn sm" style={{ marginTop: 12 }} onClick={onClose}>とじる</button>
-        <div className="dim" style={{ fontSize: 9.5, marginTop: 8, opacity: 0.7, textAlign: 'center' }}>地図データ: svg-maps (Victor Cazanave, CC BY 4.0)</div>
+        {/* CC BY 4.0 は「ライセンスへのリンク」を表示要件に含むため、名称だけでなくURLも併記する（権利台帳 2026-07-07） */}
+        <div className="dim" style={{ fontSize: 9.5, marginTop: 8, opacity: 0.7, textAlign: 'center', lineHeight: 1.7 }}>
+          地図データ:{' '}
+          <a href="https://github.com/VictorCazanave/svg-maps" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>svg-maps</a>
+          {' '}(Victor Cazanave) /{' '}
+          <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>CC BY 4.0</a>
+        </div>
       </div>
     </div>
   )

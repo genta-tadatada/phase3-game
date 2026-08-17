@@ -50,7 +50,10 @@ function MvpApp() {
 
 export function App() {
   const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null
-  if (params?.has('mvp')) return <MvpApp />
+  // 🛠 devビルド限定（本番では無効）: 旧お試し版（クイック大会編）。公開後に ?mvp で起動できると
+  //    ①EndScreenの「フル版では実装予定」文言が虚偽になる ②MVPの成績が本編の通算成績に混ざる
+  //    ③QA対象外の隠し経路になる、の3点が問題なので ?festival と同じくDEVゲートに揃える。
+  if (import.meta.env.DEV && params?.has('mvp')) return <MvpApp />
   // devビルド限定（本番では無効）: ?festival で文化祭週イベント、?selection で入部セレクションを即検証
   const festivalDebug = import.meta.env.DEV && params?.has('festival')
   const festivalSeedRaw = festivalDebug ? params!.get('festival') : null

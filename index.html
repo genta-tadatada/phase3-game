@@ -4,9 +4,6 @@
     <meta charset="UTF-8" />
     <!-- viewport-fit=cover: iOSでノッチ端末のセーフエリア(env(safe-area-inset-*))を有効化＝上部/側部の見切れ防止(#14) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <!-- 検索エンジン全面拒否（一時テスト版・将来の本番との複製誤認を防ぐ） -->
-    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
-    <meta name="googlebot" content="noindex, nofollow" />
     <!-- 更新時の白画面対策（保険）：ブラウザに index.html をキャッシュさせず、毎回ハッシュ付きJSの最新名を取得させる。
          仕様上ブラウザが http-equiv を無視できる場合もあるため、サーバ側Cache-Control（Cloudflare）と併用。 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
@@ -15,6 +12,24 @@
     <title>高校サッカー部｜ただタダ games</title>
     <meta name="description" content="創部から全国制覇を目指す、育成×経営の高校サッカー部・監督シミュレーション。ブラウザで無料、すぐに遊べます。" />
     <meta name="theme-color" content="#fbf2e3" />
+    <!-- 公開URLは /games/football/ で確定（Worker配信・ADR-023 ワンオリジン構成）。
+         itch.io等へ別配布した場合の重複コンテンツ誤認を防ぐため canonical を固定する。 -->
+    <link rel="canonical" href="https://tadatada.net/games/football/" />
+    <!-- OGP: セクション別4枚方式（tools/quiz/games/default）に準拠＝games面は ogp-games.jpg を共用 -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ただただ" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:url" content="https://tadatada.net/games/football/" />
+    <meta property="og:title" content="高校サッカー部｜ただタダ games" />
+    <meta property="og:description" content="創部から全国制覇を目指す、育成×経営の高校サッカー部・監督シミュレーション。ブラウザで無料、すぐに遊べます。" />
+    <meta property="og:image" content="https://tadatada.net/assets/ogp-games.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ただタダgames." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="高校サッカー部｜ただタダ games" />
+    <meta name="twitter:description" content="創部から全国制覇を目指す、育成×経営の高校サッカー部・監督シミュレーション。ブラウザで無料、すぐに遊べます。" />
+    <meta name="twitter:image" content="https://tadatada.net/assets/ogp-games.jpg" />
     <!-- iOS全画面対応(#14): Fullscreen APIは非対応のため、「ホーム画面に追加」で standalone 起動＝全画面化する。 -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
