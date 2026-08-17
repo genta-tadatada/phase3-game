@@ -1,10 +1,10 @@
-# 一時テストデプロイ用。全パスを検索エンジンから除外する。
-/*
-  X-Robots-Tag: noindex, nofollow, noarchive
-
 # 更新時の白画面/接続拒否対策：
 #   index.html はキャッシュさせない（ハッシュ付きJSの最新参照を常に取得）。
 #   逆にハッシュ付きassetsは長期キャッシュ可（ファイル名が変わるため上書き不可になっても安全）。
+#
+# ⚠️ かつてここに `/* → X-Robots-Tag: noindex, nofollow, noarchive` があった（テストデプロイ時代の名残）。
+#    HTTPヘッダのnoindexはmetaタグより強く効くため、/games 公開時に削除した（2026-08-17）。
+#    再びテスト配信する場合はこのファイルではなく、テスト専用ブランチ側で付けること。
 /
   Cache-Control: no-cache, no-store, must-revalidate
 /index.html

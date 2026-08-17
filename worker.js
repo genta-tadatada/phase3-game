@@ -15,6 +15,8 @@
 // ============================================================
 
 const PREFIX = '/games/football'
+// アセット空間でのトップページの正規形。理由は下の fetch 内コメント参照。
+const INDEX = '/'
 
 export default {
   async fetch(request, env) {
@@ -27,14 +29,21 @@ export default {
     }
 
     // /games/football プレフィックスを剥がして実アセットのパスへ変換
+    //
+    // ⚠️ HTMLは必ず INDEX（'/'）で要求する。'/index.html' を渡してはいけない。
+    //    Workers Static Assets の html_handling（既定 auto-trailing-slash）は
+    //    '/index.html' を「正規形は '/' 」とみなして *307リダイレクトを返す*。
+    //    その307がそのままブラウザへ渡ると Location: / ＝サイトルート（phase1ポータル）
+    //    へ着地する。「/games/football/ を開くとポータルに飛ぶ」の正体がこれ
+    //    （2026-08-17 特定。画像やrobots.txtは200で返っていたためルート自体は正常だった）。
     let assetPath = url.pathname.slice(PREFIX.length)
-    if (assetPath === '' || assetPath === '/') assetPath = '/index.html'
+    if (assetPath === '' || assetPath === '/' || assetPath === '/index.html') assetPath = INDEX
     url.pathname = assetPath
 
     const res = await env.ASSETS.fetch(new Request(url, request))
-    // SPA: 実在しない深いパスは index.html へフォールバック
+    // SPA: 実在しない深いパスは index へフォールバック（ここも '/index.html' 禁止）
     if (res.status === 404) {
-      url.pathname = '/index.html'
+      url.pathname = INDEX
       return env.ASSETS.fetch(new Request(url, request))
     }
     return res
