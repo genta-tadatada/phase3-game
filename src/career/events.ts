@@ -9,6 +9,7 @@ import { weekToMonth } from './calendar'
 import { playerOverallSum } from '../engine/match/teamQuality'
 import type { CareerState, WeekEvent, WeeklyPlan } from './types'
 import type { ManagerEventState } from './manager'
+import { EXTRA_FACILITIES } from './facilities'
 
 export interface FlavorResult {
   event: WeekEvent | null
@@ -120,7 +121,8 @@ export const CHOICE_EFFECTS: Record<string, ChoiceEffect> = {
   kick_no: { atmo: 2, result: '自力で気付くのを待った。{name}は自分の感覚で乗り越えたようだ——その経験は財産になる。' },
   // G-29 第三波 新規エフェクト
   snow_team: { atmo: 4, fatigueAll: 4, result: 'みんなで雪かきをした後の練習は、空気が締まっていた。共同作業がチームの結束を強くする。' },
-  snow_gym: { fatigueAll: -2, atmo: 1, result: '体育館に切り替え、基礎を反復した。無駄なく時間を使えた一日になった。' },
+  // B-1: 体育館を持っている場合だけ選べる＝設備投資の見返りとして雪かき組より恩恵を大きくする。
+  snow_gym: { fatigueAll: -4, atmo: 3, boost: { n: 3, lo: 1, hi: 3 }, result: '雪をかく時間を丸ごと練習に使えた。暖かい体育館で足元の技術を徹底的に反復し、外に出られない日を得に変えた。' },
   rival_take: { fatigueAll: 8, risk: {
     p: 0.6,
     success: { boost: { n: 2, lo: 3, hi: 6 }, atmo: 2, result: '完敗だったが、得たものは大きい。{name}たちの目の色が変わった。' },
@@ -191,7 +193,11 @@ export const CHOICE_EFFECTS: Record<string, ChoiceEffect> = {
 
 // #7: 選択肢ラベルに結果（ネタバレ）を出さない＝監督が選ぶ「行動」だけを示す。
 // 効果はbodyの地の文でトレードオフを匂わせ、確定した数値は決定後の結果画面で見せる。
-interface ChoiceDef { id: string; title: string; body: string; options: { label: string; effectId: string }[] }
+// 2026-08-17 B-1/B-2:
+//   months      = その月にしか出ないイベント（雪かきが夏に出る等の季節ズレを防ぐ）。未指定＝通年。
+//   requireExtra= その追加設備を持っていないと選べない選択肢（ロック表示）。設備投資の意味を作る。
+interface ChoiceOption { label: string; effectId: string; requireExtra?: string }
+interface ChoiceDef { id: string; title: string; body: string; months?: number[]; options: ChoiceOption[] }
 // G-30: 文化祭の出店名（{stall}にランダム代入＝特定選手＋具体的な店名で愛着を高める）。
 const FESTIVAL_STALLS = ['たこ焼き', '焼きそば', 'クレープ', 'お化け屋敷', '射的', 'フランクフルト', 'わたあめ', '喫茶店', 'チョコバナナ', '輪投げ']
 const CHOICE_EVENTS: ChoiceDef[] = [
@@ -221,21 +227,21 @@ const CHOICE_EVENTS: ChoiceDef[] = [
   { id: 'gym-night', title: '夜のジム通い', body: '{name}が「夜にジムへ通って体作りをしたい」と相談に来た。怪我のリスクもあるが、自主性は尊重したい。', options: [{ label: 'メニューを組んでやる', effectId: 'gym_yes' }, { label: '自宅でできる範囲にとどめる', effectId: 'gym_no' }] },
   { id: 'kick-form', title: 'キックフォームの悩み', body: '{name}がキックの調子を崩している。フォームを見直したいという。', options: [{ label: '個別に見てやる', effectId: 'kick_yes' }, { label: '自分で気付くまで様子を見る', effectId: 'kick_no' }] },
   // G-29 第三波 追加：好み型/risk型/トレードオフ型を混ぜて多様性UP
-  { id: 'snow-shovel', title: '朝の雪かき', body: '前夜の雪でグラウンドが埋まっている。練習前に雪かきが必要だ。', options: [{ label: 'みんなで雪かきから始める', effectId: 'snow_team' }, { label: '体育館でメニュー切り替え', effectId: 'snow_gym' }] },
+  { id: 'snow-shovel', title: '朝の雪かき', body: '前夜の雪でグラウンドが埋まっている。練習前に雪かきが必要だ。', months: [12, 1, 2], options: [{ label: 'みんなで雪かきから始める', effectId: 'snow_team' }, { label: '体育館に移して練習する', effectId: 'snow_gym', requireExtra: 'gym' }] },
   { id: 'rival-friendly', title: '強豪校からの練習試合オファー', body: '隣県の強豪校から練習試合の打診が来た。長距離移動で疲労リスクあり。', options: [{ label: '受けて胸を借りる', effectId: 'rival_take' }, { label: '近場の相手で経験を積む', effectId: 'rival_easy' }] },
-  { id: 'student-rep', title: '学級委員の打診', body: '{name}が学級委員に推薦された。練習量は少し減るが本人にとって貴重な経験だ。', options: [{ label: '引き受けさせる', effectId: 'rep_yes' }, { label: '部活に集中させる', effectId: 'rep_no' }] },
+  { id: 'student-rep', title: '学級委員の打診', body: '{name}が学級委員に推薦された。練習量は少し減るが本人にとって貴重な経験だ。', months: [4, 5, 9], options: [{ label: '引き受けさせる', effectId: 'rep_yes' }, { label: '部活に集中させる', effectId: 'rep_no' }] },
   { id: 'parent-gift', title: '保護者からの差し入れ', body: '保護者会から「練習後の差し入れを用意したい」と申し出があった。', options: [{ label: 'ありがたく受ける', effectId: 'gift_yes' }, { label: '気持ちだけ受け取る', effectId: 'gift_no' }] },
   { id: 'press-talk', title: '地元紙の取材依頼', body: '地元の新聞社が選手インタビューをしたいと言ってきた。', options: [{ label: '受けて部の知名度を上げる', effectId: 'press_yes' }, { label: '練習に集中させる', effectId: 'press_no' }] },
   { id: 'review-meet', title: '練習後の振り返り会', body: '{name}が「終わったあとに5分だけ振り返りの時間がほしい」と提案してきた。', options: [{ label: '毎日続けてみる', effectId: 'review_yes' }, { label: '今日だけ試してみる', effectId: 'review_once' }] },
   { id: 'fixed-eleven', title: 'スタメン固定の悩み', body: '主力11人を固定するとチーム力は安定するが、控えが育たない。', options: [{ label: 'スタメンを少し回す', effectId: 'fix_rotate' }, { label: '勝ちにこだわって固定', effectId: 'fix_keep' }] },
-  { id: 'mentor-pair', title: '先輩・後輩ペア練習', body: '3年生が「下級生と組んで基本練習を一緒にやりたい」と言ってきた。', options: [{ label: 'ペアでじっくり', effectId: 'mentor_yes' }, { label: '通常メニューを優先', effectId: 'mentor_no' }] },
+  { id: 'mentor-pair', title: '先輩・後輩ペア練習', body: '3年生が「下級生と組んで基本練習を一緒にやりたい」と言ってきた。', months: [4, 5, 6, 7, 8, 9, 10, 11, 12], options: [{ label: 'ペアでじっくり', effectId: 'mentor_yes' }, { label: '通常メニューを優先', effectId: 'mentor_no' }] },
   { id: 'film-study', title: '相手チーム映像分析', body: '次の練習試合の相手映像が手に入った。分析するかは監督次第。', options: [{ label: 'みんなで研究する', effectId: 'film_yes' }, { label: '自分たちのサッカーを磨く', effectId: 'film_no' }] },
-  { id: 'rain-day', title: '雨の日の応援練習', body: '雨で外練習ができない。室内で応援練習をやろうという提案が出た。', options: [{ label: '応援練習で結束を高める', effectId: 'rain_cheer' }, { label: '基礎をひたすら反復', effectId: 'rain_drill' }] },
+  { id: 'rain-day', title: '雨の日の応援練習', body: '雨で外練習ができない。室内で応援練習をやろうという提案が出た。', months: [6, 7, 9, 10], options: [{ label: '応援練習で結束を高める', effectId: 'rain_cheer' }, { label: '基礎をひたすら反復', effectId: 'rain_drill' }] },
   // G-29 第三波 さらに8件（合計42件達成）
-  { id: 'morning-run', title: '朝練の習慣化', body: '{name}が「朝練を続けたい」と提案してきた。寒い時期は体力の消耗も激しい。', options: [{ label: '全員で続ける', effectId: 'morn_team' }, { label: 'やりたい者だけ自主練', effectId: 'morn_solo' }] },
+  { id: 'morning-run', title: '朝練の習慣化', body: '{name}が「朝練を続けたい」と提案してきた。寒い時期は体力の消耗も激しい。', months: [11, 12, 1, 2], options: [{ label: '全員で続ける', effectId: 'morn_team' }, { label: 'やりたい者だけ自主練', effectId: 'morn_solo' }] },
   { id: 'fan-letter', title: 'ファンレターの届け', body: '小学生のサッカー少年団から「憧れています」という手紙が届いた。', options: [{ label: '皆で読んで励みにする', effectId: 'fan_read' }, { label: 'お礼の返事を書く', effectId: 'fan_reply' }] },
   { id: 'sns-rule', title: 'SNSの取り扱い', body: '部員のSNS投稿が話題になっている。校外でのふるまいにルールが必要か。', options: [{ label: '部内ルールを作る', effectId: 'sns_rule' }, { label: '本人の判断に任せる', effectId: 'sns_free' }] },
-  { id: 'send-off', title: '大会前の壮行会', body: '学校全体で壮行会を開いてくれるという。練習時間は削られる。', options: [{ label: 'ありがたく参加する', effectId: 'send_yes' }, { label: '練習を優先させる', effectId: 'send_no' }] },
+  { id: 'send-off', title: '大会前の壮行会', body: '学校全体で壮行会を開いてくれるという。練習時間は削られる。', months: [6, 12], options: [{ label: 'ありがたく参加する', effectId: 'send_yes' }, { label: '練習を優先させる', effectId: 'send_no' }] },
   { id: 'field-fix', title: 'グラウンドの整備', body: 'グラウンドの一部が荒れている。練習前に整備を入れるか。', options: [{ label: '時間を割いて整備', effectId: 'field_fix' }, { label: 'そのまま使い込む', effectId: 'field_use' }] },
   { id: 'meal-plan', title: '食事メニューの相談', body: '部員から「練習に合った食事のアドバイスがほしい」と相談された。', options: [{ label: '一緒に考える時間を取る', effectId: 'meal_help' }, { label: '本人に任せる', effectId: 'meal_self' }] },
   { id: 'self-sheet', title: '自己分析シートの提案', body: '{name}が「毎週、自分の課題を書き出すシートを使いたい」と言ってきた。', options: [{ label: 'チーム全員で取り組む', effectId: 'sheet_all' }, { label: '本人だけで試させる', effectId: 'sheet_solo' }] },
@@ -256,10 +262,8 @@ const GENERIC: { body: string; atmo: number }[] = [
   { body: 'キャプテンが全体に短いミーティングを開いた。締まった空気になる。', atmo: 2 },
   { body: '練習用ボールが1個、フェンスの向こうに消えた。回収係はじゃんけんで決定。', atmo: 0 },
   { body: '先輩が後輩にシュートのコツを教えていた。良い連鎖だ。', atmo: 2 },
-  { body: '体育祭の練習で部員が駆り出され、サッカー部の練習は半分に。', atmo: -1 },
   { body: '地域の清掃活動に部で参加した。地元の評判は悪くない。', atmo: 1 },
   { body: '{name}の誕生日をこっそり祝った。たまにはこういうのもいい。', atmo: 2 },
-  { body: '猛暑日。水分補給はこまめに、と全員に声をかけた。', atmo: 0 },
   { body: 'OBが差し入れを持って練習を見に来た。現役に良い刺激だ。', atmo: 2 },
   { body: '練習メニューの順番でちょっとした口論。すぐに収まった。', atmo: -1 },
   { body: '新しい戦術の手応えを掴んだ選手が、嬉しそうに話していた。', atmo: 2 },
@@ -271,15 +275,12 @@ const GENERIC: { body: string; atmo: number }[] = [
   { body: '部員同士でフォームを撮り合い、改善点を指摘し合っていた。', atmo: 2 },
   { body: '練習試合の相手校と、終了後に交流して打ち解けた。', atmo: 1 },
   { body: '部室にOBが寄せ書きを残していった。歴代の思いが壁に増えていく。', atmo: 2 },
-  { body: '新入生が先輩のプレーに見とれていた。憧れは上達の第一歩だ。', atmo: 1 },
   { body: '雨で流れた練習の代わりに、全員で戦術ボードを囲んだ。', atmo: 1 },
   { body: 'ベンチ組が声を枯らして応援していた。チームは一体だ。', atmo: 2 },
   { body: 'グラウンド整備のトンボがけを1年生が競争にしていた。微笑ましい。', atmo: 1 },
   { body: '練習後のミーティングが思いのほか長引いた。語りたいことが多い証拠だ。', atmo: 1 },
   { body: '近隣の幼稚園児がサッカー教室を見学。選手たちが手本を見せた。', atmo: 1 },
   { body: '部費のやりくりをマネージャーがきっちり管理してくれている。', atmo: 1 },
-  { body: '夏の終わり、引退した先輩がふらりと顔を出した。後輩たちが沸く。', atmo: 2 },
-  { body: '寒い朝、白い息を吐きながらの全体ランニング。妙に一体感がある。', atmo: 1 },
   { body: '試合直前に{name}のスパイクの紐が切れ、控えが自分のを差し出した。', atmo: 2 },
   { body: '部の目標を書いた紙が部室に貼り直された。気持ちが引き締まる。', atmo: 1 },
   // #22/#23 名指しの一コマ（{name}＝在籍選手をランダム代入）。日々の小さな物語で愛着を育てる。
@@ -302,19 +303,24 @@ const SEASONAL: { months: number[]; body: string; atmo: number }[] = [
   // 春（4-5月・新学期）
   { months: [4, 5], body: 'グラウンド脇の桜が満開だ。{name}が花びらの舞う中でボールを蹴っていた。', atmo: 2 },
   { months: [4, 5], body: '新年度の身体測定。{name}が「また背が伸びた」と少し誇らしげだった。', atmo: 1 },
+  { months: [4, 5], body: '新入生が先輩のプレーに見とれていた。憧れは上達の第一歩だ。', atmo: 1 },
   { months: [5], body: '五月晴れの下、{name}を中心に伸び伸びとしたいい練習ができた。', atmo: 2 },
   // 梅雨（6-7月）
   { months: [6], body: '梅雨の晴れ間、{name}が「今のうちに！」と外練を全力で楽しんでいた。', atmo: 1 },
   { months: [6, 7], body: '長雨で室内練習が続く。{name}が黙々と体幹トレに打ち込んでいた。', atmo: 0 },
   // 夏（7-8月）
   { months: [7, 8], body: '猛暑日。{name}が後輩に塩タブレットを配って回っていた。', atmo: 1 },
+  { months: [7, 8], body: '猛暑日。水分補給はこまめに、と全員に声をかけた。', atmo: 0 },
   { months: [8], body: '蝉しぐれの夕方、{name}が一人だけ残ってシュート練を続けていた。', atmo: 1 },
   // 秋（9-11月）
+  { months: [8, 9], body: '夏の終わり、引退した先輩がふらりと顔を出した。後輩たちが沸く。', atmo: 2 },
   { months: [9, 10], body: '涼しくなってきた。{name}の動きが一段と軽くなったように見える。', atmo: 1 },
+  { months: [9, 10], body: '体育祭の練習で部員が駆り出され、サッカー部の練習は半分に。', atmo: -1 },
   { months: [10, 11], body: '文化祭の準備で校内が賑やか。{name}たちも合間に顔を出して楽しんでいた。', atmo: 1 },
   { months: [11], body: '落ち葉の散るグラウンドで、{name}が黙々とロングキックの精度を確かめていた。', atmo: 1 },
   // 冬（12-2月）
   { months: [12, 1], body: '吐く息も白い早朝練習。{name}が一番に声を出してチームを引っ張った。', atmo: 2 },
+  { months: [12, 1, 2], body: '寒い朝、白い息を吐きながらの全体ランニング。妙に一体感がある。', atmo: 1 },
   { months: [1], body: '正月明け、{name}が「今年こそ」と新しい目標を口にしていた。', atmo: 2 },
   { months: [2], body: '底冷えする体育館。{name}が寒さに負けず基礎を反復していた。', atmo: 1 },
 ]
@@ -446,7 +452,9 @@ export function generateWeeklyFlavor(state: CareerState, plan: WeeklyPlan, rng: 
   if (rng.chance(0.06 * eventMult)) {
     // G-45: 文化祭の選択は week28 固定イベント（generateFestivalWeek）に一本化済み。
     //   ここのランダムプールには文化祭を含めない（旧G-44の週制限フィルタも不要になった）。
-    const ce = rng.pick(CHOICE_EVENTS)
+    // B-2(2026-08-17): months 指定のあるイベントは該当月しか出さない（夏に雪かきが出る等の季節ズレを防ぐ）。
+    const pool = CHOICE_EVENTS.filter((e) => !e.months || e.months.includes(month))
+    const ce = rng.pick(pool)
     // G-03/G-28: 本文の{name}置換と同じ選手名を保存し、選択後の結果の地の文にも同じ選手を差し込む。
     const active = state.roster.filter((p) => !p.retired)
     const a1 = active.length ? rng.pick(active) : null
@@ -455,8 +463,18 @@ export function generateWeeklyFlavor(state: CareerState, plan: WeeklyPlan, rng: 
     // G-30: {stall}（文化祭の出店名）もランダム代入して具体性を出す。
     const stall = rng.pick(FESTIVAL_STALLS)
     const fill = (s: string) => s.replace(/\{stall\}/g, stall).replace(/\{name2\}/g, a2 ? a2.name : '別の選手').replace(/\{name\}/g, a1 ? a1.name : '選手')
+    // B-1(2026-08-17): 設備が要る選択肢は「持っていなければ選べない」形で見せる。
+    //   隠さずロック表示にすることで、設備投資すると選べる手が増えることが player に伝わる。
+    const extras = state.facilities.extras ?? []
+    let options = ce.options.map((o) => {
+      if (!o.requireExtra || extras.includes(o.requireExtra)) return { label: o.label, effectId: o.effectId }
+      const name = EXTRA_FACILITIES.find((e) => e.id === o.requireExtra)?.name ?? o.requireExtra
+      return { label: o.label, effectId: o.effectId, locked: `${name}が必要` }
+    })
+    // 全部ロックされたら詰むので、その場合だけロックを外す（選択肢設計のセーフティ）
+    if (options.every((o) => o.locked)) options = ce.options.map((o) => ({ label: o.label, effectId: o.effectId }))
     return {
-      event: { id: `ch-${ce.id}-${state.week}`, kind: 'choice', title: ce.title, body: fill(ce.body), options: ce.options, actorName: a1?.name, actorName2: a2?.name },
+      event: { id: `ch-${ce.id}-${state.week}`, kind: 'choice', title: ce.title, body: fill(ce.body), options, actorName: a1?.name, actorName2: a2?.name },
       atmoDelta: 0,
     }
   }
@@ -722,7 +740,8 @@ export function generateManagerWeekEvent(
 //   旧6日モード（期待値≈10.5）よりわずかに低いが、全員疲労も+15→+6に軽くなっており年間影響は微小
 //   （同一シードA/B: 年末能力合計の差 ≈ +6/4100・雰囲気+0.2・疲労差は年末までに消滅）。
 // 恋愛の確率と効果は旧6日モードから変更なし（0=20%/1=50%/2=25%/3=5%・
-// 告白:された=6:4・成功:失敗=7:3・成功=彼女+IQ+1+疲労-5・失敗=調子-1）。
+// 成功:失敗=7:3・成功=彼女+IQ+1+疲労-5・失敗=調子-1）。
+// B-3(2026-08-17): 「告白された:6:4」の分岐は廃止＝告白する側のみ（断ったのに落ち込む矛盾を解消）。
 // ============================================================
 
 const FESTIVAL_PARTNER_TYPES = [
@@ -735,18 +754,13 @@ const FESTIVAL_PARTNER_TYPES = [
   '図書室でよく会う子',
 ] as const
 
-/** 文化祭での恋愛イベント1件分。告白方向×結果の4パターン。中卒レベルの語彙で短く。 */
-function buildLoveLine(name: string, partnerType: string, direction: 'confess' | 'confessed', result: 'success' | 'reject'): string {
-  if (direction === 'confess' && result === 'success') {
-    return `${name}が${partnerType}に告白して彼女ができたみたいだ。`
-  }
-  if (direction === 'confess' && result === 'reject') {
-    return `${name}が${partnerType}に告白したけど振られたらしい。`
-  }
-  if (direction === 'confessed' && result === 'success') {
-    return `${name}が${partnerType}に告白されて彼女ができたみたいだ。`
-  }
-  return `${name}が${partnerType}に告白されたけど断ったらしい。`
+/** 文化祭での恋愛イベント1件分。
+ *  B-3(2026-08-17): 「告白された→断った」のに本人が落ち込むのは筋が通らないので、
+ *  告白する側だけに一本化した（成功＝付き合う／失敗＝振られて落ち込む）。 */
+function buildLoveLine(name: string, partnerType: string, result: 'success' | 'reject'): string {
+  return result === 'success'
+    ? `${name}が${partnerType}に告白して彼女ができたみたいだ。`
+    : `${name}が${partnerType}に告白したけど振られたらしい。`
 }
 
 export interface FestivalWeekResult {
@@ -793,9 +807,8 @@ export function generateFestivalWeek(state: CareerState, rng: RNG): FestivalWeek
   for (let i = 0; i < loveCount && i < gfShuffled.length; i++) {
     const p = gfShuffled[i]
     const partnerType = rng.pick(FESTIVAL_PARTNER_TYPES)
-    const direction = rng.next() < 0.6 ? 'confess' : 'confessed' // 告白:された = 6:4
     const result = rng.next() < 0.7 ? 'success' : 'reject'        // 成功:失敗 = 7:3
-    const line = buildLoveLine(p.name, partnerType, direction, result)
+    const line = buildLoveLine(p.name, partnerType, result)
     if (result === 'success') {
       patches.push((roster) => roster.map((q) => q.id === p.id
         ? { ...q, hasGirlfriend: true, abilities: { ...q.abilities, iq: Math.min(99, q.abilities.iq + 1) }, fatigue: Math.max(0, q.fatigue - 5) }

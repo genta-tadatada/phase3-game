@@ -118,8 +118,14 @@ export function EventBubble({ ev, onResolve }: { ev: WeekEvent; onResolve: (effe
               <button className="btn" onClick={() => setPage((p) => p + 1)}>つぎ ▶</button>
             ) : isChoice ? (
               <div className="event-actions" style={{ flex: 1 }}>
+                {/* B-1: locked（設備未所持）の選択肢は押せないが見える＝設備投資で手が増えることを伝える */}
                 {ev.options!.map((o, i) => (
-                  <button key={i} className="btn secondary sm" onClick={() => onResolve(o.effectId)}>{o.label}</button>
+                  o.locked ? (
+                    <button key={i} className="btn secondary sm" disabled title={o.locked}
+                      style={{ opacity: 0.45, cursor: 'not-allowed' }}>🔒 {o.label}<span style={{ fontSize: 11, fontWeight: 700, marginLeft: 6 }}>（{o.locked}）</span></button>
+                  ) : (
+                    <button key={i} className="btn secondary sm" onClick={() => onResolve(o.effectId)}>{o.label}</button>
+                  )
                 ))}
               </div>
             ) : (

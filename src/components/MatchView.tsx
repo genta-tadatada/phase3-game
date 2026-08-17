@@ -83,6 +83,9 @@ export interface HalfTimeControls {
   onSub: (outId: string, inId: string) => void
   onTactics: (tactics: Tactics) => void
   onResume: () => void             // 次の停止点 or 最終まで進める
+  // B-5(2026-08-17): 選べるフォーメーション。キャリアでは「フォーメーション解放」前は 4-4-2 のみを渡す。
+  //   未指定なら全フォーメーション（エキシビション等・従来動作）。
+  formations?: readonly Tactics['formation'][]
 }
 
 // beats が無い旧resultでも落ちないようstepsから最小beatを作る
@@ -439,7 +442,7 @@ export function MatchView({
                 // 中間は <details> で折りたたみ（クリックで展開）。HTは常時展開。
                 const tacticsBlock = (
                   <>
-                    <TacRow label="フォーメーション" opts={FORMATION_LIST.map((f) => [f, f])} val={tac.formation} on={(v) => setTac({ formation: v as Tactics['formation'] })} hint={FORMATION_DESC[tac.formation]} />
+                    <TacRow label="フォーメーション" opts={(ht!.formations ?? FORMATION_LIST).map((f) => [f, f])} val={tac.formation} on={(v) => setTac({ formation: v as Tactics['formation'] })} hint={FORMATION_DESC[tac.formation]} />
                     <TacRow label="姿勢" opts={(['ultra-attack', 'attack', 'balance', 'defense', 'ultra-defense'] as const).map((m) => [m, MENTALITY_LABEL[m]])} val={tac.mentality} on={(v) => setTac({ mentality: v as Tactics['mentality'] })} hint="攻撃的ほど得点力UP・守備が手薄。守備的ほど堅いが点は取りにくい。" />
                     <TacRow label="プレス" opts={[['high', '激しい'], ['mid', '標準'], ['low', '低い']]} val={tac.press} on={(v) => setTac({ press: v as Tactics['press'] })} hint="激しい＝高い位置で奪える／スタミナ消耗。低い＝省エネだが押し込まれる。" />
                     <TacRow label="守備ライン" opts={[['high', '高い'], ['mid', '標準'], ['low', '低い']]} val={tac.defenseLine} on={(v) => setTac({ defenseLine: v as Tactics['defenseLine'] })} hint="高い＝主導権／速い相手に裏を取られやすい。低い＝安全だが押し込まれる。" />

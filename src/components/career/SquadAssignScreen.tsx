@@ -62,7 +62,7 @@ function TeamBlock({ squad, label, atmo, unlocked, cap }: { squad: Squad; label:
         <h2 className="h2">{label}（<span style={{ color: over ? 'var(--bad)' : undefined }}>{members.length}{cap !== undefined ? `/${cap}` : ''}</span>人）</h2>
         <span style={{ fontSize: 12, color: band.color }}>雰囲気: {band.label}</span>
       </div>
-      {over && <div style={{ fontSize: 11, color: 'var(--bad)', marginBottom: 4 }}>⚠ 招集は20人まで。超過分は試合に出られません（ベンチ外へ）。</div>}
+      {over && <div style={{ fontSize: 11, color: 'var(--bad)', marginBottom: 4 }}>⚠ 招集は20人まで。あふれた選手は試合に出られません。</div>}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
         {members.map((p) => <Row key={p.id} p={p} unlocked={unlocked} />)}
         {members.length === 0 && <div className="dim" style={{ fontSize: 12 }}>所属なし</div>}
@@ -129,9 +129,9 @@ export function SquadAssignScreen() {
         </>
       ) : (
         <>
-          <h1 className="h1">招集メンバー / ベンチ外</h1>
+          <h1 className="h1">招集メンバー / 招集外</h1>
           <p className="dim" style={{ fontSize: 12, lineHeight: 1.6, marginBottom: 8 }}>
-            公式戦に連れて行く<b>招集メンバー（最大20人＝先発11＋ベンチ9）</b>を選ぶ。外れた選手は<b>ベンチ外</b>に。
+            公式戦に連れて行く<b>招集メンバー（最大20人＝先発11＋ベンチ9）</b>を選ぶ。外れた選手は<b>招集外</b>となり、見てくれる人間がいないぶん伸びも鈍い。
             部員が少ないうちは全員が招集される。<br />
             <span style={{ color: 'var(--green-deep)' }}>部員25人＋寮Lv2＋Bチームコーチ雇用</span>でBチームが、<span style={{ color: 'var(--green-deep)' }}>部員45人＋寮Lv4＋Cチームコーチ雇用</span>でCチームが解禁されます。
           </p>
@@ -150,7 +150,7 @@ export function SquadAssignScreen() {
       ) : (
         <>
           <TeamBlock squad="A" label="招集メンバー" atmo={c.atmosphere} unlocked={false} cap={20} />
-          <TeamBlock squad="B" label="ベンチ外" atmo={atmoB} unlocked={false} />
+          <TeamBlock squad="B" label="招集外" atmo={atmoB} unlocked={false} />
         </>
       )}
 

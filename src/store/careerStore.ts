@@ -1011,7 +1011,7 @@ export const useCareer = create<CareerStore>((set, get) => ({
               { id: `retire-${nextCareer.year}`, kind: 'flavor', title: '3年生、引退',
                 body: `冬の大会を最後に、3年生${retiring.length}名が部を引退した。今日でグラウンドを去る——残された1・2年が新チームを背負う。（${retiring.slice(0, 6).map((p) => p.name).join('、')}${retiring.length > 6 ? ' ほか' : ''}）` },
             ]
-            if (inh.text) evts.push({ id: `inherit-${nextCareer.year}`, kind: 'flavor', title: '🎓 受け継がれる魂', body: inh.text })
+            if (inh.text) evts.push({ id: `inherit-${nextCareer.year}`, kind: 'flavor', title: '🎓 最後の居残り', body: inh.text })
             nextCareer = {
               ...nextCareer,
               roster,
@@ -1117,13 +1117,13 @@ export const useCareer = create<CareerStore>((set, get) => ({
       if (id === 'bcoach') {
         const ev = {
           id: `tut-b-${next.year}-${next.week}`, kind: 'flavor' as const, title: '🔓 Bチームが解放',
-          body: 'Bチームコーチを雇い、Bチームが解放された。\n編成画面でA以外の部員をBに配属できる。Bチームは週末の練習試合（軽量裏シミュ）で実戦経験を積み、稀に覚醒する。Aの控えと併用してチームの厚みを作ろう。',
+          body: 'Bチームコーチを雇い、Bチームが解放された。\n編成画面で、Aチーム以外の部員をBチームに入れられる。Bチームは週末に自分たちで練習試合を組んで実戦経験を積み、まれに一皮むける選手が出る。Aの控えと併せて、チームの厚みを作ろう。',
         }
         next = { ...next, pendingEvents: [...next.pendingEvents, ev] }
       } else if (id === 'ccoach') {
         const ev = {
           id: `tut-c-${next.year}-${next.week}`, kind: 'flavor' as const, title: '🔓 Cチームが解放',
-          body: 'Cチームコーチを雇い、Cチームが解放された。\n部員45人+寮Lv4の終盤レア体験。Bの一段下で経験を積む層を作れる。3チーム制で長期育成を回せるようになった。',
+          body: 'Cチームコーチを雇い、Cチームが解放された。\n部員も寮もここまで揃えたチームだけがたどり着ける規模だ。Bチームのさらに一段下で経験を積む層を作れる。3チームで、長い目で選手を育てられるようになった。',
         }
         next = { ...next, pendingEvents: [...next.pendingEvents, ev] }
       } else if (id === 'scout-chief') {
@@ -1137,13 +1137,13 @@ export const useCareer = create<CareerStore>((set, get) => ({
       } else if (id === 'scout-net') {
         const ev = {
           id: `tut-scout-net-${next.year}-${next.week}`, kind: 'flavor' as const, title: '広域スカウトが加入',
-          body: '広域スカウトを雇った。スカウトSP +2/週、候補が +4人 拡張される。県外までネットワークが広がった。',
+          body: '広域スカウトを雇った。毎週のスカウトSPが2増え、追える候補も4人増える。県外まで足を運べるようになった。',
         }
         next = { ...next, pendingEvents: [...next.pendingEvents, ev] }
       } else if (id === 'coach' || id === 'coach2') {
         const ev = {
           id: `tut-coach-${id}-${next.year}-${next.week}`, kind: 'flavor' as const, title: 'コーチを採用',
-          body: `${id === 'coach' ? '専属フィジカルコーチ' : 'アシスタントコーチ'}を採用した。練習枠が+1され、成長効率が ${id === 'coach' ? '+12%' : '+8%'} 上がる。育成計画を組み直そう。`,
+          body: `${id === 'coach' ? '専属フィジカルコーチ' : 'アシスタントコーチ'}を採用した。同時に組める練習が1つ増え、練習での伸びも ${id === 'coach' ? '12%' : '8%'} 上がる。練習メニューを組み直そう。`,
         }
         next = { ...next, pendingEvents: [...next.pendingEvents, ev] }
       } else if (id === 'trainer') {

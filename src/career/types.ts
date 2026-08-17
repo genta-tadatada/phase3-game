@@ -170,8 +170,8 @@ export interface WeekEvent {
   kind: 'forced' | 'choice' | 'flavor' | 'news'
   title: string
   body: string
-  // 選択肢（choice時）
-  options?: { label: string; effectId: string }[]
+  // 選択肢（choice時）。locked= 設備未所持などで選べない理由（あればボタンは無効表示）
+  options?: { label: string; effectId: string; locked?: string }[]
   // G-03/G-28: 選択イベントで{name}置換した選手名を保持し、選択後の結果の地の文に同じ選手を差し込む
   actorName?: string
   actorName2?: string

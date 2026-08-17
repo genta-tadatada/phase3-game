@@ -29,7 +29,7 @@ export function inheritFromGraduates(roster: Player[], graduating: Player[], rng
   const pool = samePos.length > 0 ? samePos : cands
   const heir = pool[Math.floor(rng.next() * pool.length)]
   const skillName = SKILLS.find((s) => s.id === skillId)?.name ?? skillId
-  return { roster: addSkill(roster, heir.id, skillId), text: `引退する${mentor.name}先輩が、卒業前に${heir.name}へ「${skillName}」を託した。しっかりと受け継がれた。` }
+  return { roster: addSkill(roster, heir.id, skillId), text: `卒業までの最後の数日、${mentor.name}は${heir.name}を居残りに付き合わせた。毎日、暗くなるまで二人きりで。\n「${skillName}」は、そのまま${heir.name}のものになった。` }
 }
 
 /**

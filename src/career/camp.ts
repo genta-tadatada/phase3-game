@@ -107,7 +107,7 @@ export function genCampDay(state: CareerState, day: number): DayGen {
       const g = granted.gains[0]
       // #8: そのスキル専用の開花エピソードを優先（無ければ汎用にフォールバック）
       const flavor = SKILL_EPISODE[g.id] ?? SKILL_FLAVOR[Math.floor(rng.next() * SKILL_FLAVOR.length)]
-      skillEv = { tag: 'skill', title: flavor.title, body: fill(flavor.body, g.name), detail: `${playerTag(g.grade, g.pos, g.name)}が特殊能力「${g.skill}」を開花！` }
+      skillEv = { tag: 'skill', title: flavor.title, body: fill(flavor.body, g.name), detail: `${playerTag(g.grade, g.pos, g.name)}が「${g.skill}」のコツを掴んだ！` }
       skillsGained++
     }
   }

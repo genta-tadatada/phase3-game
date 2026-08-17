@@ -3,6 +3,7 @@ import { loadHallOfFame } from '../../career/hallOfFame'
 import { reputationTierName } from '../../lib/labels'
 import { ACHIEVEMENTS } from '../../data/achievements'
 import { getAccount, unlockedIcons, unlockedTitles } from '../../lib/account'
+import { AccountRecordsCard } from './AccountPanel'
 
 export function RecordsScreen() {
   const c = useCareer((s) => s.career)
@@ -14,6 +15,10 @@ export function RecordsScreen() {
     <div className="screen">
       <div className="app-title">部の歩み</div>
       <h1 className="h1">{c.schoolName} 記録</h1>
+
+      {/* C群(2026-08-17): 記録の保存先をここで伝える。
+          未ログインなら「この端末にしか残っていない」→ アカウントを作る理由として提示する。 */}
+      <AccountRecordsCard />
 
       {/* #53 現在の「格」（評判ティア）を常時可視化＝マイルストーンが見える */}
       <div className="panel tint-orange center" style={{ marginBottom: 10, padding: '8px 12px' }}>

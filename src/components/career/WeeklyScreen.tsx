@@ -110,7 +110,7 @@ export function WeeklyScreen() {
           )}
           <div className="dim" style={{ fontSize: 11.5, lineHeight: 1.5 }}>
             {plan.weekend === 'rest' ? '疲労を大きく回復（-25）＋調子が上向く。雰囲気も少し上がる。'
-              : plan.weekend === 'practice-match' ? '出場選手の能力が全体的に少し伸びる（特に苦手が埋まる）。相手が強い・勝つほど得るものが大きい。先発は試合勘（調子）も上がるが疲労+10。'
+              : plan.weekend === 'practice-match' ? '出場した選手が伸びる。強い相手ほど得るものは大きい。先発は勝てば乗ってくるが、疲労+10。'
               : '練習①をもう一度行い追加で成長。ただし詰め込みで雰囲気-1。'}
           </div>
           </>}

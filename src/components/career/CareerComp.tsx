@@ -12,6 +12,7 @@ import { playerOverallSum } from '../../engine/match/teamQuality'
 import { climateMattersFor, climateMatchCoef, WEATHER_ICON, type Weather } from '../../career/weather'
 import { prefBerths } from '../../career/competition'
 import { prefDifficulty } from '../../data/schoolLedger'
+import { featureUnlocked } from '../../career/unlocks'
 import { Confetti, CountUp } from '../../ui/celebrate'
 import { asset } from '../../ui/asset'
 
@@ -133,9 +134,9 @@ export function CareerBracket() {
           : null
         return (
           <div style={{ fontSize: 11.5, marginBottom: 8, lineHeight: 1.6, background: 'var(--orange-pastel)', borderRadius: 9, padding: '7px 10px' }}>
-            🎲 <b>抽選会</b>：全国は<b>pot制</b>（強さ帯ごとに抽選）＝毎回違う組み合わせ。
-            あなたは <b style={{ color: 'var(--orange-deep)', fontFamily: 'var(--font-num)' }}>Pot {pot}</b> <span className="dim">/ {totalPots}</span>（数字が小さいほど格上＝<b>全国での立ち位置</b>）{trend}。
-            <span className="dim"> 各校の強さタグで格が分かる。下の「全体を見る」で全ブラケット。</span>
+            🎲 <b>組み合わせ抽選</b>：全国大会は、出場校を強さごとのグループ（ポット）に分けてから抽選する。だから毎年ちがう顔ぶれと当たる。
+            あなたは <b style={{ color: 'var(--orange-deep)', fontFamily: 'var(--font-num)' }}>Pot {pot}</b> <span className="dim">/ {totalPots}</span>（数字が小さいグループほど格上。<b>全国での今の立ち位置</b>だ）{trend}。
+            <span className="dim"> 各校の強さタグで格が分かる。下の「全体を見る」でトーナメント表を全部見られる。</span>
           </div>
         )
       })()}
@@ -271,6 +272,7 @@ export function CareerBracket() {
 
 export function CareerMatch() {
   const comp = useCareer((s) => s.comp)
+  const c = useCareer((s) => s.career)
   const finishCompMatch = useCareer((s) => s.finishCompMatch)
   const halfTimeSub = useCareer((s) => s.halfTimeSub)
   const halfTimeTactics = useCareer((s) => s.halfTimeTactics)
@@ -317,6 +319,8 @@ export function CareerMatch() {
       onSub: halfTimeSub,
       onTactics: (t) => halfTimeTactics(t),
       onResume: continueCompMatch,
+      // B-5: 「フォーメーション解放」前は試合中の采配でも 4-4-2 のみ（画面ごとに解放状態がズレないように）
+      formations: c && featureUnlocked('formations', c.year, c.week) ? undefined : (['4-4-2'] as const),
     }
   }
 

@@ -7,7 +7,7 @@ import { createRNG, hashSeed } from '../engine/rng'
 import { defaultTactics } from '../engine/generate/team'
 import { shortenSchoolName } from '../data/schools'
 import { findPrefecture } from '../data/prefectures'
-import { generateRecruit, FOUNDING_SQUAD, FOUNDING_BOOST, FOUNDING_CLAMP } from './recruit'
+import { generateRecruit, buildFoundingSquad, FOUNDING_BOOST, FOUNDING_CLAMP } from './recruit'
 import { autoAssignSquads } from './squad'
 import { assignJerseyNumbers } from './jersey'
 import { WEEKS_PER_YEAR, SAVE_VERSION, type CareerState } from './types'
@@ -21,15 +21,17 @@ export function createCareer(schoolName: string, prefecture: string, managerName
   const rng = createRNG(seed)
   const pref = findPrefecture(prefecture)
 
-  // 創部メンバー16人（1年8/2年5/3年3・評判0）。各学年から集まった部員。
-  const roster = FOUNDING_SQUAD.map((slot) =>
+  // 創部メンバー17人（1年8/2年6/3年3・評判0）。各学年から集まった部員。
+  // ポジション構成は固定（4-4-2に合わせた配分）／強さ（tier）だけ学年内でシャッフル＝当たり選手のポジションは毎回変わる。
+  const roster = buildFoundingSquad(rng).map((slot) =>
     generateRecruit(rng, {
       position: slot.position,
       reputation: 0,
       grade: slot.grade,
-      // tier別の底上げ（強いのは3年スター＋2年good1人だけ。他のnormalはとても弱い＝#37）
+      // tier別の底上げ（強いのは3年スター＋2年good1人だけ＝#37）。
+      // D群(2026-08-17): 1年=weak / 初年度2年=normal で学年差を付けた（詳細は recruit.ts のコメント）
       strengthBoost: FOUNDING_BOOST[slot.tier],
-      // tier別の能力上限（star=60 / good=52 / normal=44）
+      // tier別の能力上限（star=60 / good=52 / normal=46 / weak=44）
       clampMax: FOUNDING_CLAMP[slot.tier],
       // 創部メンバーは指定ポジが本職になるよう強めのポジション補正（#36・初期段階のみ）
       biasMult: 1.9,
@@ -99,7 +101,7 @@ export function createCareer(schoolName: string, prefecture: string, managerName
         id: 'tutorial-basics',
         kind: 'flavor' as const,
         title: '🔰 はじめに（サッカーの基礎）',
-        body: 'サッカーは11人で戦う。ポジションは大きく GK（守護神）／DF（守り：CB・SB）／MF（中盤：DM・CM・AM・WB）／FW（攻め：WF・CF）に分かれる。\n選手にはそれぞれ得意ポジションがあり、能力に合った配置だと力を発揮する。\nこのゲームは「毎週の練習で選手を育て」「週末に試合や休養を選び」「年2回の大会で勝ち上がる」のくり返し。最初は練習と週送りだけ。チームの成長とともに、できることが増えていくよ。\nまずは気軽に1週ずつ進めてみよう！',
+        body: 'サッカーは11人。ポジションは GK・DF（CB・SB）・MF（DM・CM・AM・WB）・FW（WF・CF）に分かれる。\n選手にはそれぞれ得意なポジションがあり、合った場所に置けば力を出す。\n毎週の練習で選手を育て、週末に試合か休養を選び、年2回の大会に挑む。最初にできるのは練習と週送りだけだが、チームが育つにつれて手を出せることが増えていく。\nまずは1週、進めてみよう。',
       }] : []),
     ],
     log: [`${cleanName} サッカー部を創部（${pref.name}）`],

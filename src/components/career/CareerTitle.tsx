@@ -1,10 +1,11 @@
-import { useState, type CSSProperties } from 'react'
+import { useState } from 'react'
 import { useCareer } from '../../store/careerStore'
 import { useAuth } from '../../store/authStore'
 import { PREFECTURES } from '../../data/prefectures'
 import { asset } from '../../ui/asset'
 import { JapanMap } from './JapanMap'
 import { HowToPlay } from './HowToPlay'
+import { AccountModal } from './AccountPanel'
 import { FullscreenButton } from '../../ui/FullscreenButton'
 
 // 難易度3段階（県のサッカー強度→色）
@@ -47,37 +48,11 @@ export function CareerTitle() {
   const [showHelp, setShowHelp] = useState(false)
   const [showAccount, setShowAccount] = useState(false) // #54 アカウント（ログイン・クラウド同期）
 
-  // アカウント状態（store/authStore.ts）。ログインは任意＝未ログインでもそのまま遊べる
+  // アカウント状態（store/authStore.ts）。ログインは任意＝未ログインでもそのまま遊べる。
+  // モーダル本体は components/career/AccountPanel.tsx（記録画面と共用）。
   const authStatus = useAuth((s) => s.status)
   const authNickname = useAuth((s) => s.nickname)
   const authConflict = useAuth((s) => s.conflict)
-  const authBusy = useAuth((s) => s.busy)
-  const [nickInput, setNickInput] = useState('')
-  const [nickError, setNickError] = useState(false)
-  const [editingNick, setEditingNick] = useState(false)
-  const [confirmDelete, setConfirmDelete] = useState(false)
-
-  const closeAccount = () => {
-    setShowAccount(false)
-    setEditingNick(false)
-    setConfirmDelete(false)
-    setNickError(false)
-  }
-  const submitNickname = async () => {
-    const ok = await useAuth.getState().setNickname(nickInput)
-    if (ok) {
-      setEditingNick(false)
-      setNickError(false)
-      setNickInput('')
-    } else {
-      setNickError(true)
-    }
-  }
-  // モーダル内の控えめなテキストリンク風ボタン
-  const linkStyle: CSSProperties = {
-    background: 'none', border: 'none', padding: '4px 8px', fontSize: 12, fontWeight: 700,
-    color: 'var(--ink-soft)', textDecoration: 'underline', cursor: 'pointer',
-  }
 
   const [logoOk, setLogoOk] = useState(true)
 
@@ -129,77 +104,7 @@ export function CareerTitle() {
             <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.7)', fontSize: 10.5, fontWeight: 700, marginTop: 6, textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>ただタダ games</div>
           </div>
         </div>
-        {showAccount && (
-          <div className="event-overlay" style={{ background: 'rgba(38,54,40,0.8)' }} onClick={closeAccount}>
-            <div className="event-card pop-in" style={{ maxWidth: 340 }} onClick={(e) => e.stopPropagation()}>
-              <div className="event-title" style={{ textAlign: 'center' }}>アカウント・データ同期</div>
-
-              {authStatus === 'loading' && (
-                <p className="dim" style={{ fontSize: 13, lineHeight: 1.7, marginTop: 6 }}>アカウントを確認しています…</p>
-              )}
-
-              {authStatus === 'guest' && (
-                <>
-                  <p style={{ fontSize: 13, lineHeight: 1.7, marginTop: 6 }}>
-                    Googleでログインすると、セーブデータと殿堂を<b>別の端末に引き継げます</b>。無料・登録不要。<br />
-                    <span className="dim" style={{ fontSize: 12 }}>氏名やメールは受け取りません。</span>
-                  </p>
-                  <button className="btn" style={{ marginTop: 8 }} onClick={() => useAuth.getState().login()}>Googleでログイン</button>
-                </>
-              )}
-
-              {(authStatus === 'needsNickname' || (authStatus === 'member' && editingNick)) && (
-                <>
-                  <p style={{ fontSize: 13, lineHeight: 1.7, marginTop: 6 }}>
-                    ただタダ games で表示する名前を決めてください。<span className="dim" style={{ fontSize: 12 }}>（あとで変更できます。）</span>
-                  </p>
-                  <input className="input" value={nickInput} maxLength={20} placeholder="例: げんた"
-                    onChange={(e) => { setNickInput(e.target.value); setNickError(false) }} />
-                  {nickError && (
-                    <div style={{ color: '#c0392b', fontSize: 12, fontWeight: 700 }}>その名前は使えません。1〜20文字で入力してください。</div>
-                  )}
-                  <button className="btn" style={{ marginTop: 8 }} disabled={!nickInput.trim() || authBusy}
-                    onClick={() => { void submitNickname() }}>決定</button>
-                  {authStatus === 'needsNickname' ? (
-                    <button type="button" style={linkStyle} disabled={authBusy}
-                      onClick={() => { void useAuth.getState().logout() }}>ログアウトする</button>
-                  ) : (
-                    <button type="button" style={linkStyle}
-                      onClick={() => { setEditingNick(false); setNickError(false) }}>やめる</button>
-                  )}
-                </>
-              )}
-
-              {authStatus === 'member' && !editingNick && (
-                <>
-                  <p style={{ fontSize: 14.5, fontWeight: 800, marginTop: 6, marginBottom: 0 }}>
-                    👤 {authNickname}
-                    <button type="button" style={{ ...linkStyle, marginLeft: 6, fontSize: 11.5 }}
-                      onClick={() => { setNickInput(authNickname ?? ''); setNickError(false); setEditingNick(true) }}>変更</button>
-                  </p>
-                  <p className="dim" style={{ fontSize: 12.5, marginTop: 2 }}>☁️ セーブデータをこの端末と同期しています</p>
-                  <button className="btn ghost" style={{ marginTop: 6 }} disabled={authBusy}
-                    onClick={() => { void useAuth.getState().logout() }}>ログアウト</button>
-                  {confirmDelete ? (
-                    <>
-                      <p style={{ color: '#c0392b', fontSize: 12.5, fontWeight: 700, lineHeight: 1.6, marginTop: 8 }}>
-                        アカウントとクラウドのセーブが消えます。この端末のローカルセーブは残ります。
-                      </p>
-                      <button className="btn" disabled={authBusy}
-                        style={{ background: 'linear-gradient(180deg, #e2574a, #c0392b)', color: '#fff', boxShadow: '0 4px 0 #8e2a1f, 0 8px 16px rgba(192,57,43,0.3)' }}
-                        onClick={() => { void useAuth.getState().deleteAccount() }}>本当に削除する</button>
-                      <button type="button" style={linkStyle} onClick={() => setConfirmDelete(false)}>やめる</button>
-                    </>
-                  ) : (
-                    <button type="button" style={{ ...linkStyle, color: '#c0392b' }} onClick={() => setConfirmDelete(true)}>アカウントを削除</button>
-                  )}
-                </>
-              )}
-
-              <button className="btn ghost" style={{ marginTop: 8 }} onClick={closeAccount}>とじる</button>
-            </div>
-          </div>
-        )}
+        {showAccount && <AccountModal onClose={() => setShowAccount(false)} />}
         {showHelp && <HowToPlay onClose={() => setShowHelp(false)} />}
         {/* クラウド同期の競合（別端末により新しいセーブ）: 明示的にどちらかを選ぶまで閉じない */}
         {authConflict && (

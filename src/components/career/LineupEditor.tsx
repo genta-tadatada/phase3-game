@@ -37,6 +37,9 @@ export function LineupEditor() {
   const upd = (patch: Partial<Tactics>) => { if (c) setTactics({ ...c.tactics, ...patch }) }
 
   const tacticsOn = !!c && featureUnlocked('tactics', c.year, c.week) // 戦術（フォーメ/姿勢）は解放後のみ
+  // B-5(2026-08-17): 「フォーメーション解放」イベント前にこの画面から他フォーメを選べてしまうバグ。
+  //   CareerTactics 側だけ formations で絞っていて、こちらは FORMATION_LIST 全件を出していた。
+  const formOk = !!c && featureUnlocked('formations', c.year, c.week)
   const formation = c?.tactics.formation ?? '4-4-2'
   const slots = FORMATIONS[formation]
   const coords = FORMATION_COORDS[formation]
@@ -192,7 +195,7 @@ export function LineupEditor() {
         <div className="panel" style={{ padding: '10px 12px' }}>
           {tacticsOn ? (<>
           <div className="section-label" style={{ marginBottom: 8 }}>⚙ 戦術（互角時）</div>
-          <TacChips label="フォーメーション" opts={FORMATION_LIST.map((f) => [f, f])} val={formation} on={(v) => upd({ formation: v as Tactics['formation'] })} hint={FORMATION_DESC[formation]} />
+          <TacChips label="フォーメーション" opts={(formOk ? FORMATION_LIST : (['4-4-2'] as unknown as typeof FORMATION_LIST)).map((f) => [f, f])} val={formation} on={(v) => upd({ formation: v as Tactics['formation'] })} hint={formOk ? FORMATION_DESC[formation] : '他のフォーメーションは解放後に選べる（まずは4-4-2に慣れよう）'} />
           <TacChips label="姿勢" opts={(['ultra-attack', 'attack', 'balance', 'defense', 'ultra-defense'] as const).map((m) => [m, MENTALITY_LABEL[m]])} val={c.tactics.mentality} on={(v) => upd({ mentality: v as Tactics['mentality'] })} hint="攻撃的ほど得点力UP・守備が手薄に。守備的ほど堅いが点は取りにくい。" />
           <TacChips label="プレス" opts={[['high', '激しい'], ['mid', '標準'], ['low', '低い']]} val={c.tactics.press} on={(v) => upd({ press: v as Tactics['press'] })} hint="激しい＝高い位置で奪える／スタミナ消耗。低い＝省エネだが押し込まれやすい。" />
           <TacChips label="守備ライン" opts={[['high', '高い'], ['mid', '標準'], ['low', '低い']]} val={c.tactics.defenseLine} on={(v) => upd({ defenseLine: v as Tactics['defenseLine'] })} hint="高い＝主導権を握れるが、速い相手に裏を取られやすい。低い＝安全だが押し込まれる。" />

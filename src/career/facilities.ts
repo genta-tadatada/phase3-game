@@ -82,12 +82,12 @@ export type StaffId =
 export interface StaffDef { id: StaffId; name: string; hire: number; salary: number; desc: string }
 export const STAFF: StaffDef[] = [
   // G-41 §3 並び順: 重要度順（スカウト主任→練習コーチ→広域スカウト→Bコーチ→Cコーチ→トレーナー）
-  { id: 'scout-chief',name: 'スカウト主任',         hire: 520, salary: 90, desc: 'スカウト機能本体を解放・毎週のスカウトSP+3・追える候補が4人増える（年2の5月から雇用可）' },
+  { id: 'scout-chief',name: 'スカウト主任',         hire: 520, salary: 90, desc: 'スカウト機能本体を解放・毎週のスカウトSP+3・追える候補が4人増える（2年目の5月から雇用可）' },
   { id: 'coach',      name: '専属フィジカルコーチ', hire: 320, salary: 60, desc: '練習枠+1・練習での成長効率が上がる（+12%）' },
   { id: 'coach2',     name: 'アシスタントコーチ',   hire: 280, salary: 55, desc: '練習枠+1・成長効率がさらに上がる（+8%）' },
   { id: 'scout-net',  name: '広域スカウト',         hire: 400, salary: 70, desc: '毎週のスカウトSP+2・追える候補が4人増える（スカウト範囲拡大）' },
   { id: 'bcoach',     name: 'Bチームコーチ',        hire: 380, salary: 65, desc: 'Bチームを解放（部員25人+寮Lv2以上が必要）。B合宿とB練習試合で育成を回せる' },
-  { id: 'ccoach',     name: 'Cチームコーチ',        hire: 380, salary: 65, desc: 'Cチームを解放（部員45人+寮Lv4以上+Bチームコーチ雇用済が必要）。3チーム制の終盤レア体験' },
+  { id: 'ccoach',     name: 'Cチームコーチ',        hire: 380, salary: 65, desc: 'Cチームを解放（部員45人+寮Lv4以上+Bチームコーチ雇用済が必要）。3チーム制でさらに厚く選手を育てられる' },
   { id: 'trainer',    name: '専属トレーナー',       hire: 260, salary: 50, desc: '疲労の回復が早まり、選手が好調を保ちやすい' },
 ]
 // G-41 §3: analyst は廃止対象でSTAFFから外れるため undefined を返し得る。呼び出し側で
@@ -132,7 +132,7 @@ export function annualSalaries(staff: string[] | undefined): number {
 export function staffHireGate(state: CareerState, id: StaffId): { ok: boolean; reason?: string } {
   const has = (x: StaffId) => (state.staff ?? []).includes(x)
   if (id === 'scout-chief') {
-    if (state.year < 2 || (state.year === 2 && state.week < 5)) return { ok: false, reason: '年2の5月（week5）から雇用可' }
+    if (state.year < 2 || (state.year === 2 && state.week < 5)) return { ok: false, reason: '2年目の5月から雇用可' }
   }
   if (id === 'scout-net') {
     if (!has('scout-chief')) return { ok: false, reason: 'スカウト主任の雇用が必要' }

@@ -117,7 +117,7 @@ export function ManageScreen() {
           const hasScoutChief = (c.staff ?? []).includes('scout-chief')
           if (!hasScoutChief) {
             if (c.year < 2 || (c.year === 2 && c.week < 5)) {
-              lines.push(`スカウト主任: 年2の5月(week5)以降に雇用可（現在 年${c.year} 週${c.week}）`)
+              lines.push(`スカウト主任: 2年目の5月以降に雇用可（現在 ${c.year}年目 ${c.week}週目）`)
             } else {
               lines.push(`スカウト主任: 採用可（経営画面で雇用）`)
             }

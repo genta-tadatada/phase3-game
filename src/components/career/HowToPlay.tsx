@@ -106,7 +106,7 @@ const TIPS: ReactNode[] = [
   <>相手との<HL c="KEY">戦術相性</HL>が勝敗を分ける。<HL c="INFO">リード時・ビハインド時</HL>の戦術も別に組める。</>,
   <>選手にはそれぞれ<HL c="INFO">得意ポジション（希望★）</HL>がある。能力＋★で配置を決めよう。</>,
   <><HL c="GOOD">才能（潜在）は無い</HL>。誰でも育成・覚醒・試合経験で能力99まで伸びる。ただし初期能力が高い子は最初からリードしている。</>,
-  <><HL c="KEY">スカウト</HL>でアンダー世代代表級の選手を勧誘できる（2年目〜）＝大きなアドバンテージ。</>,
+  <><HL c="KEY">スカウト</HL>でアンダー世代代表級の選手を勧誘できる（2年目〜）。ここで獲れると一気に楽になる。</>,
   <>当たり性格は稀。育成や経験で<HL c="GOOD">性格が良い方向へ変わる</HL>こともある。</>,
 ]
 
@@ -166,7 +166,7 @@ const SECTIONS: Section[] = [
           <YearRow when="12–1月" tag="🏆 全国" tagColor={C.KEY} text="冬季大会 全国。勝てば全国制覇。" />
           <YearRow when="1月" tag="📚 考査" tagColor={C.INFO} text="3回目の定期考査（3年は除外）。" />
           <YearRow when="2月" tag="🔍 スカウト" tagColor={C.INFO} text={<>勧誘した候補の<HL c="INFO">結果が確定</HL>。ライバル校に取られる事も。</>} />
-          <YearRow when="3月" tag="🎓 卒業" tagColor={C.GOOD} text={<>3年生が卒業。<HL c="GOOD">稀にプロ入り</HL>＝以後ずっと寄付増収。</>} />
+          <YearRow when="3月" tag="🎓 卒業" tagColor={C.GOOD} text={<>3年生が卒業。<HL c="GOOD">稀にプロ入り</HL>。その後もずっと寄付が入り続ける。</>} />
           <YearRow when="3月" tag="📚 考査" tagColor={C.INFO} text="最後の定期考査。" />
         </div>
         <div className="dim" style={{ fontSize: 11.5, marginTop: 8, lineHeight: 1.6 }}>
@@ -188,7 +188,7 @@ const SECTIONS: Section[] = [
           <li>試合は前半・後半。大会で同点なら<HL c="INFO">延長 → PK戦</HL>で決着。</li>
           <li>公式戦の<HL c="KEY">招集メンバーは最大20人</HL>（先発11＋ベンチ9）。登録は最大30人。</li>
           <li><HL c="KEY">交代は1試合5人</HL>まで。<HL c="GOOD">ハーフタイムは戦術もフォーメーションも丸ごと変更可</HL>（ピッチ図から交代）。</li>
-          <li><HL c="GOOD">強豪県は全国出場枠が2</HL>＝準優勝でも全国へ（激戦区の救済）。それ以外の県は優勝のみ。</li>
+          <li><HL c="GOOD">強豪県は全国出場枠が2</HL>。準優勝でも全国へ行ける（激戦区の救済）。それ以外の県は優勝しないと出られない。</li>
           <li><HL c="KEY">賞金・補助金は大会終了時にすぐ入る</HL>。資金の使い道（設備）をいつでも進められる。</li>
           <li>大会週も選手は試合の合間に軽く練習する。練習が完全に止まるわけではない。</li>
         </ul>
@@ -336,7 +336,7 @@ const SECTIONS: Section[] = [
         <div style={{ marginTop: 12, padding: '8px 10px', borderRadius: 9, background: COMBO_GRADIENT }}>
           <div style={{ fontWeight: 900, fontSize: 13, color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>🌈 {RARITY_LABEL[4]}（組み合わせ）</div>
           <div style={{ fontSize: 11.5, color: '#fff', opacity: 0.95, fontWeight: 600, marginTop: 2, lineHeight: 1.6 }}>
-            特定の2つを1人が併せ持つと、自動で最上位「{RARITY_LABEL[4]}」に進化＝合算よりさらに強い。
+            特定の2つを1人が併せ持つと、自動で最上位「{RARITY_LABEL[4]}」に進化する。2つを別々に持っているより、さらに強い。
           </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 6 }}>
@@ -479,7 +479,7 @@ const SECTIONS: Section[] = [
             <span style={{ color: C.BAD }}> 猛暑＝スタミナ</span> ／
             <span style={{ color: C.INFO }}> 雪・寒波＝パワー</span>。<br />
             <HL c="GOOD">体育館</HL>があれば悪天候でも効率が保たれる。
-            また<HL c="INFO">所在地で慣れた天候</HL>がある（沖縄＝暑さ／北海道＝寒さ）＝慣れた天候の日は強い。
+            また<HL c="INFO">所在地で慣れた天候</HL>がある（沖縄なら暑さ、北海道なら寒さ）。慣れた天候の日は、悪天候でも力を発揮する。
           </div>
         </div>
 

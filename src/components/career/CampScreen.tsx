@@ -96,7 +96,7 @@ export function CampScreen() {
             <p style={{ fontSize: 14.5, lineHeight: 1.95, fontWeight: 700, color: 'var(--ink)', margin: 0 }}>
               いよいよ夏合宿。<br />1日ごとに、いろんな出来事が起きる一週間。<br />監督として判断を下しながら、チームの物語を見守ろう。
             </p>
-            <p style={{ fontSize: 12, color: 'var(--ink-dim)', fontWeight: 700, marginTop: 12 }}>※この一週間の出来事の中で、選手が特殊能力に目覚めることがある</p>
+            <p style={{ fontSize: 12, color: 'var(--ink-dim)', fontWeight: 700, marginTop: 12 }}>※この一週間のどこかで、選手が何かのコツを掴むことがある</p>
           </div>
         )}
 
@@ -116,7 +116,7 @@ export function CampScreen() {
             <p style={{ textAlign: 'center', fontSize: 13.5, color: 'var(--ink-dim)', fontWeight: 700, marginTop: 0 }}>一週間、本当によく頑張った。</p>
             {skillLines.length > 0 ? (
               <div style={{ marginTop: 10 }}>
-                <div style={{ fontSize: 14, fontWeight: 900, color: 'var(--orange-deep)', marginBottom: 6 }}>✨ 開花した特殊能力（{skillLines.length}）</div>
+                <div style={{ fontSize: 14, fontWeight: 900, color: 'var(--orange-deep)', marginBottom: 6 }}>✨ この合宿で掴んだもの（{skillLines.length}）</div>
                 {skillLines.map((s, i) => (<div key={i} style={{ padding: '7px 11px', borderRadius: 9, background: 'rgba(255,150,90,0.14)', fontSize: 14, fontWeight: 800, color: 'var(--ink)', marginBottom: 6 }}>🎉 {s}</div>))}
               </div>
             ) : (
